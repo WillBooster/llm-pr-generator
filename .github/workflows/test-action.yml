@@ -1,0 +1,21 @@
+name: Test Action
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Test LLM PR Generator (Local)
+        id: generator
+        uses: ./  # This references the action in the current repository
+
+      - name: Display PR Description Output
+        run: |
+          echo "PR Description Output:"
+          echo "${{ steps.generator.outputs.pr-description }}"

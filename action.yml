@@ -1,0 +1,53 @@
+name: 'LLM PR Generator'
+description: 'A GitHub Action that generates pull requests using LLMs'
+author: 'WillBooster Inc.'
+
+# Define the outputs for your action
+outputs:
+  pr-description:
+    description: '[PLACEHOLDER] The generated PR description'
+
+# Define the runs configuration
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*'
+
+    - name: Print Node.js version
+      shell: bash
+      run: |
+        echo "Node.js version:"
+        node --version
+        npm --version
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Print Python version
+      shell: bash
+      run: |
+        echo "Python version:"
+        python --version
+        pip --version
+
+    - name: Generate PR description
+      id: generate
+      shell: bash
+      run: |
+        chmod +x ${{ github.action_path }}/generate-pr.sh
+        ${{ github.action_path }}/generate-pr.sh
+
+# Add branding to make your action stand out in the marketplace
+branding:
+  icon: 'git-pull-request'
+  color: 'blue'

@@ -1,3 +1,7 @@
-# llm-pr-generator
+# LLM PR Generator
 
-A PR generator powered by LLMs.
+A GitHub Action that automatically generates pull request descriptions using Large Language Models (LLMs).
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
