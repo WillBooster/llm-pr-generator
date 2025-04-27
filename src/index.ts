@@ -27,6 +27,7 @@ const ret = child_process.spawnSync(
     stdio: 'pipe',
   }
 );
+console.info('gh result:', ret);
 const issue: GitHubIssue = JSON.parse(ret.stdout);
 
 if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
