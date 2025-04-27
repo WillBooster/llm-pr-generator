@@ -21,9 +21,22 @@ export interface CommentAuthor {
 }
 
 /**
- * Represents a reaction group (not fully defined in the example)
+ * Represents users who reacted with a specific reaction
  */
-export type ReactionGroup = Record<string, string>;
+export interface ReactionUsers {
+  /** The total count of users who reacted */
+  totalCount: number;
+}
+
+/**
+ * Represents a reaction group on a comment or issue
+ */
+export interface ReactionGroup {
+  /** The type of reaction (e.g., THUMBS_UP, LAUGH) */
+  content: string;
+  /** Users who reacted */
+  users: ReactionUsers;
+}
 
 /**
  * Represents a GitHub issue comment
@@ -54,6 +67,20 @@ export interface GitHubComment {
 }
 
 /**
+ * Represents a GitHub label
+ */
+export interface GitHubLabel {
+  /** The label's unique ID */
+  id: string;
+  /** The label's name */
+  name: string;
+  /** The label's description (optional) */
+  description?: string;
+  /** The label's color (hex code without #) */
+  color: string;
+}
+
+/**
  * Represents a GitHub issue
  */
 export interface GitHubIssue {
@@ -63,6 +90,8 @@ export interface GitHubIssue {
   body: string;
   /** Comments on the issue */
   comments: GitHubComment[];
+  /** Labels attached to the issue */
+  labels: GitHubLabel[];
   /** The issue's title */
   title: string;
 }

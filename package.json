@@ -26,6 +26,7 @@
     "@willbooster/prettier-config": "10.0.0",
     "@willbooster/wb": "8.0.42",
     "build-ts": "13.1.40",
+    "chalk": "5.4.1",
     "lefthook": "1.11.11",
     "prettier": "3.5.3",
     "sort-package-json": "3.0.0",

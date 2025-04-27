@@ -93,6 +93,10 @@ runs:
         chmod +x ${{ github.action_path }}/scripts/generate-pr.sh
         ${{ github.action_path }}/scripts/generate-pr.sh
 
+    - name: Run main code
+      shell: bash
+      run: bun src/index.ts
+
 # Add branding to make your action stand out in the marketplace
 branding:
   icon: 'git-pull-request'
