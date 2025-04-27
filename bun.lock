@@ -3,13 +3,11 @@
   "workspaces": {
     "": {
       "name": "llm-pr-generator",
-      "dependencies": {
-        "@types/yargs": "17.0.33",
-      },
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@types/bun": "1.2.10",
         "@types/micromatch": "4.0.9",
+        "@types/yargs": "17.0.33",
         "@willbooster/biome-config": "2.1.0",
         "@willbooster/prettier-config": "10.0.0",
         "@willbooster/wb": "8.0.42",
