@@ -6,7 +6,7 @@
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@types/bun": "1.2.10",
-        "@types/micromatch": "^4",
+        "@types/micromatch": "4.0.9",
         "@willbooster/biome-config": "2.1.0",
         "@willbooster/prettier-config": "10.0.0",
         "@willbooster/wb": "8.0.42",
@@ -14,9 +14,6 @@
         "prettier": "3.5.3",
         "sort-package-json": "3.0.0",
         "typescript": "5.8.3",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
       },
     },
   },
