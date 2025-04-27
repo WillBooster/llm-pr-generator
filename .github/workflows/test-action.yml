@@ -12,10 +12,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test LLM PR Generator (Local)
-        id: generator
+        id: generate
         uses: ./  # This references the action in the current repository
 
       - name: Display PR Description Output
         run: |
           echo "PR Description Output:"
-          echo "${{ steps.generator.outputs.pr-description }}"
+          echo "${{ steps.generate.outputs.pr-description }}"
