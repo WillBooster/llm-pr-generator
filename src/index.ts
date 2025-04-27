@@ -13,6 +13,12 @@ const argv = yargs(hideBin(process.argv))
     type: 'number',
     default: 8,
   })
+  .option('aider-args', {
+    description: 'Arguments to pass to aider',
+    type: 'string',
+    default:
+      '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0',
+  })
   .help()
   .alias('help', 'h')
   .parseSync();
@@ -55,10 +61,15 @@ ${YAML.stringify(issueContent).trim()}
 console.info(prompt);
 
 // Build aider command arguments
-const aiderArgs = ['--version'];
+const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings'];
+if (argv['aider-args']) {
+  aiderArgs.push(...argv['aider-args'].split(/s+/));
+}
+aiderArgs.push('--message', prompt);
 
-// Execute aider command with arguments array
-child_process.spawnSync('aider', aiderArgs, { stdio: 'inherit' });
+// Execute aider command
+console.info(`Running aider with ${aiderArgs}`);
+child_process.spawnSync('aider', aiderArgs, { stdio: 'inherit', shell: true });
 console.info(`\nIssue #${issueNumber} processed successfully.`);
 
 console.info('AWS_REGION:', process.env.AWS_REGION);
