@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "author": "WillBooster Inc.",
   "scripts": {
-    "build": "build-ts",
+    "build": "build-ts app",
     "check-all": "bun run cleanup && bun run typecheck && bun run test",
     "cleanup": "bun --bun wb lint --fix --format",
     "format": "bun --bun wb lint --format",
@@ -17,6 +17,9 @@
     "typecheck": "bun --bun wb typecheck"
   },
   "prettier": "@willbooster/prettier-config",
+  "dependencies": {
+    "@types/yargs": "17.0.33"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/bun": "1.2.10",
@@ -29,6 +32,7 @@
     "prettier": "3.5.3",
     "sort-package-json": "3.0.0",
     "typescript": "5.8.3",
-    "yaml": "2.7.1"
+    "yaml": "2.7.1",
+    "yargs": "17.7.2"
   }
 }

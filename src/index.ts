@@ -1,8 +1,24 @@
-import * as child_process from 'node:child_process';
+import child_process from 'node:child_process';
 import YAML from 'yaml';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import type { GitHubIssue } from './types';
 
-const ret = child_process.spawnSync('gh issue view 8 --json author,title,body,comments', {
+// Parse command line arguments
+const argv = yargs(hideBin(process.argv))
+  .option('issue', {
+    alias: 'i',
+    description: 'GitHub issue number',
+    type: 'number',
+    default: 8,
+  })
+  .help()
+  .alias('help', 'h')
+  .parseSync();
+
+const issueNumber = argv.issue;
+
+const ret = child_process.spawnSync(`gh issue view ${issueNumber} --json author,title,body,comments`, {
   shell: true,
   encoding: 'utf8',
   stdio: 'pipe',
@@ -28,3 +44,4 @@ ${YAML.stringify(issueContent)}
 `.trim();
 
 console.info(prompt);
+console.info(`\nIssue #${issueNumber} processed successfully.`);
