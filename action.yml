@@ -73,6 +73,19 @@ runs:
         echo "GitHub CLI version:"
         gh --version
 
+    - name: Install Aider
+      shell: bash
+      run: |
+        echo "Installing Aider..."
+        python -m pip install aider-install
+        aider-install
+
+    - name: Print Aider version
+      shell: bash
+      run: |
+        echo "Aider version:"
+        aider --version
+
     - name: Generate PR description
       id: generator
       shell: bash
