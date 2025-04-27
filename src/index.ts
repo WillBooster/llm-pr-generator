@@ -61,7 +61,7 @@ ${YAML.stringify(issueContent).trim()}
 console.info(prompt);
 
 // Build aider command arguments
-const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings'];
+const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
 if (argv['aider-args']) {
   aiderArgs.push(...argv['aider-args'].split(/s+/));
 }
