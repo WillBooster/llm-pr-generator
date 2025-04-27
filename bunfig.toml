@@ -1,0 +1,7 @@
+telemetry = false
+
+[install]
+exact = true
+
+[run]
+bun = true

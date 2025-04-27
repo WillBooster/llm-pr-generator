@@ -90,8 +90,8 @@ runs:
       id: generator
       shell: bash
       run: |
-        chmod +x ${{ github.action_path }}/generate-pr.sh
-        ${{ github.action_path }}/generate-pr.sh
+        chmod +x ${{ github.action_path }}/scripts/generate-pr.sh
+        ${{ github.action_path }}/scripts/generate-pr.sh
 
 # Add branding to make your action stand out in the marketplace
 branding:

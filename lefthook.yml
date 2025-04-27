@@ -1,0 +1,20 @@
+post-merge:
+  scripts:
+    prepare.sh:
+      runner: bash
+pre-commit:
+  commands:
+    cleanup:
+      glob: '*.{cjs,css,cts,htm,html,js,json,json5,jsonc,jsx,md,mjs,mts,scss,ts,tsx,vue,yaml,yml}'
+      run: bun --bun wb lint --fix --format {staged_files} && git add {staged_files}
+    check-migrations:
+      glob: '**/migration.sql'
+      run: |-
+        if grep -q 'Warnings:' {staged_files}; then
+          echo "Migration SQL files ({staged_files}) contain warnings! Please solve the warnings and commit again."
+          exit 1
+        fi
+pre-push:
+  scripts:
+    check.sh:
+      runner: bash

@@ -1,6 +1,9 @@
 # LLM PR Generator
 
-A GitHub Action that automatically generates pull request descriptions using Large Language Models (LLMs).
+[![Test](https://github.com/WillBooster/llm-pr-generator/actions/workflows/test.yml/badge.svg)](https://github.com/WillBooster/llm-pr-generator/actions/workflows/test.yml)
+[![Test action](https://github.com/WillBooster/llm-pr-generator/actions/workflows/test-action.yml/badge.svg)](https://github.com/WillBooster/llm-pr-generator/actions/workflows/test-action.yml)
+
+A GitHub Action that automatically generates pull requests using Large Language Models (LLMs).
 
 ## License
 

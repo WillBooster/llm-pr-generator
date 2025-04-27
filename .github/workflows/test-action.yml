@@ -13,7 +13,7 @@ jobs:
 
       - name: Test LLM PR Generator (Local)
         id: generate
-        uses: ./  # This references the action in the current repository
+        uses: ./ # This references the action in the current repository
 
       - name: Display PR Description Output
         run: |
