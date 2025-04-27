@@ -16,6 +16,7 @@ jobs:
         uses: ./ # This references the action in the current repository
         env:
           AWS_REGION: us-west-2
+          GH_TOKEN: ${{ github.token }}
 
       - name: Display PR Description Output
         run: |
