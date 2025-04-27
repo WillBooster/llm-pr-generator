@@ -41,7 +41,7 @@ runs:
         pip --version
 
     - name: Generate PR description
-      id: generate
+      id: generator
       shell: bash
       run: |
         chmod +x ${{ github.action_path }}/generate-pr.sh

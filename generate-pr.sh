@@ -54,4 +54,8 @@ echo "pr-description<<EOF" >> $GITHUB_OUTPUT
 echo "$DESCRIPTION" >> $GITHUB_OUTPUT
 echo "EOF" >> $GITHUB_OUTPUT
 
+# Also print the description to stdout for debugging
+echo "Generated PR Description:"
+echo "$DESCRIPTION"
+
 echo "PR description generated successfully!"
