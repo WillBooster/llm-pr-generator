@@ -67,6 +67,12 @@ runs:
         python --version
         pip --version
 
+    - name: Print GitHub CLI version
+      shell: bash
+      run: |
+        echo "GitHub CLI version:"
+        gh --version
+
     - name: Generate PR description
       id: generator
       shell: bash
