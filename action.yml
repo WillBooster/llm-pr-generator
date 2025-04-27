@@ -5,7 +5,8 @@ author: 'WillBooster Inc.'
 # Define the outputs for your action
 outputs:
   pr-description:
-    description: '[PLACEHOLDER] The generated PR description'
+    description: 'The generated PR description'
+    value: ${{ steps.generator.outputs.pr-description }}
 
 # Define the runs configuration
 runs:
