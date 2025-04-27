@@ -17,10 +17,25 @@ runs:
       with:
         fetch-depth: 0
 
+    - name: Extract versions from .tool-versions
+      id: versions
+      shell: bash
+      run: |
+        BUN_VERSION=$(grep "^bun " .tool-versions | cut -d' ' -f2)
+        NODE_VERSION=$(grep "^nodejs " .tool-versions | cut -d' ' -f2)
+        PYTHON_VERSION=$(grep "^python " .tool-versions | cut -d' ' -f2)
+        echo "bun-version=$BUN_VERSION" >> $GITHUB_OUTPUT
+        echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+        echo "python-version=$PYTHON_VERSION" >> $GITHUB_OUTPUT
+        echo "Extracted versions from .tool-versions:"
+        echo "Bun: $BUN_VERSION"
+        echo "Node.js: $NODE_VERSION"
+        echo "Python: $PYTHON_VERSION"
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 'lts/*'
+        node-version: ${{ steps.versions.outputs.node-version }}
 
     - name: Print Node.js version
       shell: bash
@@ -29,10 +44,21 @@ runs:
         node --version
         npm --version
 
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ steps.versions.outputs.bun-version }}
+
+    - name: Print Bun version
+      shell: bash
+      run: |
+        echo "Bun version:"
+        bun --version
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13.3'
+        python-version: ${{ steps.versions.outputs.python-version }}
 
     - name: Print Python version
       shell: bash
