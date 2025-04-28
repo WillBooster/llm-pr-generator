@@ -12,6 +12,8 @@ test-fixtures/
 *.min.js
 .yarn/
 .pnp.js
+.aider.*
+
 !.keep
 .env.production
 */mount/*.hash

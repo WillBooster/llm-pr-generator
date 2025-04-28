@@ -3,10 +3,15 @@ name: Test Action
 on:
   # Manual trigger
   workflow_dispatch:
+  # Trigger on label events
+  label:
+    types: [created, edited]
 
 jobs:
   test-action:
     runs-on: ubuntu-latest
+    # Only run if the label name includes 'llm-pr' and an issue number is available
+    if: contains(github.event.label.name, 'llm-pr') && github.event.issue.number != null
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -14,8 +19,12 @@ jobs:
       - name: Test LLM PR Generator (Local)
         id: generate
         uses: ./ # This references the action in the current repository
+        with:
+          issue-number: ${{ github.event.issue.number }}
         env:
-          AWS_REGION: us-west-2
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION_NAME: us-west-2
           GH_TOKEN: ${{ github.token }}
 
       - name: Display PR Description Output

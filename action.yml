@@ -2,6 +2,12 @@ name: 'LLM PR Generator'
 description: 'A GitHub Action that generates pull requests using LLMs'
 author: 'WillBooster Inc.'
 
+# Define the inputs for your action
+inputs:
+  issue-number:
+    description: 'The issue (or PR) number to reference when generating the PR'
+    required: true
+
 # Define the outputs for your action
 outputs:
   pr-description:
@@ -22,27 +28,12 @@ runs:
       shell: bash
       run: |
         BUN_VERSION=$(grep "^bun " .tool-versions | cut -d' ' -f2)
-        NODE_VERSION=$(grep "^nodejs " .tool-versions | cut -d' ' -f2)
         PYTHON_VERSION=$(grep "^python " .tool-versions | cut -d' ' -f2)
         echo "bun-version=$BUN_VERSION" >> $GITHUB_OUTPUT
-        echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
         echo "python-version=$PYTHON_VERSION" >> $GITHUB_OUTPUT
         echo "Extracted versions from .tool-versions:"
         echo "Bun: $BUN_VERSION"
-        echo "Node.js: $NODE_VERSION"
         echo "Python: $PYTHON_VERSION"
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ steps.versions.outputs.node-version }}
-
-    - name: Print Node.js version
-      shell: bash
-      run: |
-        echo "Node.js version:"
-        node --version
-        npm --version
 
     - name: Set up Bun
       uses: oven-sh/setup-bun@v2
@@ -95,7 +86,7 @@ runs:
 
     - name: Run main code
       shell: bash
-      run: bun src/index.ts
+      run: bun src/index.ts --issue ${{ inputs.issue-number }}
 
 # Add branding to make your action stand out in the marketplace
 branding:
