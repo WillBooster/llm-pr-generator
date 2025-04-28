@@ -59,7 +59,7 @@ ${YAML.stringify(issueContent).trim()}
 
   const now = new Date();
 
-  const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}`;
+  const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
   runCommand('git', ['switch', '-C', branchName]);
 
   // Build aider command arguments
