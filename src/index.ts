@@ -76,7 +76,7 @@ ${YAML.stringify(issueContent).trim()}
 
   // Create a PR using GitHub CLI
   const repo = getGitRepoName();
-  const prTitle = getHeaderOfLastCommit();
+  const prTitle = getHeaderOfFirstCommit();
   const prBody = `Closes #${issueNumber}
 
 \`\`\`\`
@@ -107,12 +107,13 @@ function getGitRepoName(): string {
   return repoMatch ? repoMatch[1] : '';
 }
 
-function getHeaderOfLastCommit(): string {
-  const lastCommitResult = child_process.spawnSync('git', ['log', '-1', '--pretty=%s'], {
+function getHeaderOfFirstCommit(): string {
+  // Get the first commit of the diff from the main branch
+  const firstCommitResult = child_process.spawnSync('git', ['log', 'main..HEAD', '--reverse', '--pretty=%s', '-1'], {
     encoding: 'utf8',
     stdio: 'pipe',
   });
-  return lastCommitResult.stdout.trim();
+  return firstCommitResult.stdout.trim();
 }
 
 main();
