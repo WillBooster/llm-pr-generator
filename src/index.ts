@@ -77,13 +77,10 @@ const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
 runCommand('git', ['push', 'origin', branchName]);
 
 // Create a PR using GitHub CLI
-const lastCommitResult = child_process.spawnSync('git', ['log', '-1', '--pretty=%s'], {
-  encoding: 'utf8',
-  stdio: 'pipe',
-});
-const prTitle = lastCommitResult.stdout.trim();
+const repo = getGitRepoName();
+const prTitle = getHeaderOfLastCommit();
 const prBody = `Closes #${issueNumber}\n\n${aiderAnswer}`;
-runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody]);
+runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repo]);
 
 console.info(`\nIssue #${issueNumber} processed successfully.`);
 console.info('AWS_REGION:', process.env.AWS_REGION);
@@ -91,4 +88,23 @@ console.info('AWS_REGION:', process.env.AWS_REGION);
 function runCommand(command: string, args: string[]): void {
   console.info(chalk.green(`$ ${command} ${args}`));
   child_process.spawnSync(command, args, { stdio: 'inherit' });
+}
+
+function getGitRepoName(): string {
+  // Get the repository URL to avoid the interactive prompt
+  const repoUrlResult = child_process.spawnSync('git', ['remote', 'get-url', 'origin'], {
+    encoding: 'utf8',
+    stdio: 'pipe',
+  });
+  const repoUrl = repoUrlResult.stdout.trim();
+  const repoMatch = repoUrl.match(/github\.com[\/:]([\w-]+\/[\w-]+)(\.git)?$/);
+  return repoMatch ? repoMatch[1] : '';
+}
+
+function getHeaderOfLastCommit(): string {
+  const lastCommitResult = child_process.spawnSync('git', ['log', '-1', '--pretty=%s'], {
+    encoding: 'utf8',
+    stdio: 'pipe',
+  });
+  return lastCommitResult.stdout.trim();
 }
