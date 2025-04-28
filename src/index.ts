@@ -53,9 +53,9 @@ const issueContent = {
 
 const prompt = `
 Modify the code to solve the following GitHub issue:
-\`\`\`yml
+\`\`\`\`yml
 ${YAML.stringify(issueContent).trim()}
-\`\`\`
+\`\`\`\`
 `.trim();
 
 console.info(prompt);
@@ -80,7 +80,11 @@ runCommand('git', ['push', 'origin', branchName]);
 // Create a PR using GitHub CLI
 const repo = getGitRepoName();
 const prTitle = getHeaderOfLastCommit();
-const prBody = `Closes #${issueNumber}\n\n${aiderAnswer}`;
+const prBody = `Closes #${issueNumber}
+
+\`\`\`\`
+${aiderAnswer}
+\`\`\`\``;
 runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repo]);
 
 console.info(`\nIssue #${issueNumber} processed successfully.`);
