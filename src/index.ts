@@ -60,16 +60,22 @@ ${YAML.stringify(issueContent).trim()}
 
 console.info(prompt);
 
+const now = new Date();
+const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+child_process.spawnSync('git', ['switch', '-C', branchName]);
+
 // Build aider command arguments
 const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
 if (argv['aider-args']) {
-  aiderArgs.push(...argv['aider-args'].split(/s+/));
+  aiderArgs.push(...argv['aider-args'].split(/\s+/));
 }
 aiderArgs.push('--message', prompt);
 
 // Execute aider command
 console.info(`Running aider with ${aiderArgs}`);
-child_process.spawnSync('aider', aiderArgs, { stdio: 'inherit', shell: true });
-console.info(`\nIssue #${issueNumber} processed successfully.`);
+child_process.spawnSync('aider', aiderArgs, { stdio: 'inherit' });
 
+child_process.spawnSync('git', ['push', 'origin', branchName]);
+
+console.info(`\nIssue #${issueNumber} processed successfully.`);
 console.info('AWS_REGION:', process.env.AWS_REGION);
