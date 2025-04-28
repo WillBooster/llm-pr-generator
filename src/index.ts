@@ -9,9 +9,9 @@ import type { GitHubIssue } from './types';
 const argv = yargs(hideBin(process.argv))
   .option('issue', {
     alias: 'i',
-    description: 'GitHub issue number',
+    description: 'GitHub issue (or PR) number',
     type: 'number',
-    default: 8,
+    demandOption: true,
   })
   .option('aider-args', {
     description: 'Arguments to pass to aider',

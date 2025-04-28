@@ -10,8 +10,8 @@ on:
 jobs:
   test-action:
     runs-on: ubuntu-latest
-    # Only run if the label name includes 'llm-pr'
-    if: contains(github.event.label.name, 'llm-pr')
+    # Only run if the label name includes 'llm-pr' and an issue number is available
+    if: contains(github.event.label.name, 'llm-pr') && github.event.issue.number != null
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,6 +19,8 @@ jobs:
       - name: Test LLM PR Generator (Local)
         id: generate
         uses: ./ # This references the action in the current repository
+        with:
+          issue-number: ${{ github.event.issue.number }}
         env:
           AWS_REGION: us-west-2
           GH_TOKEN: ${{ github.token }}

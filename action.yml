@@ -2,6 +2,12 @@ name: 'LLM PR Generator'
 description: 'A GitHub Action that generates pull requests using LLMs'
 author: 'WillBooster Inc.'
 
+# Define the inputs for your action
+inputs:
+  issue-number:
+    description: 'The issue (or PR) number to reference when generating the PR'
+    required: true
+
 # Define the outputs for your action
 outputs:
   pr-description:
@@ -95,7 +101,7 @@ runs:
 
     - name: Run main code
       shell: bash
-      run: bun src/index.ts
+      run: bun src/index.ts --issue ${{ inputs.issue-number }}
 
 # Add branding to make your action stand out in the marketplace
 branding:
