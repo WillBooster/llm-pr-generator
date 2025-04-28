@@ -39,31 +39,10 @@ runs:
       uses: oven-sh/setup-bun@v2
       with:
         bun-version: ${{ steps.versions.outputs.bun-version }}
-
-    - name: Print Bun version
-      shell: bash
-      run: |
-        echo "Bun version:"
-        bun --version
-
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ steps.versions.outputs.python-version }}
-
-    - name: Print Python version
-      shell: bash
-      run: |
-        echo "Python version:"
-        python --version
-        pip --version
-
-    - name: Print GitHub CLI version
-      shell: bash
-      run: |
-        echo "GitHub CLI version:"
-        gh --version
-
     - name: Install Aider
       shell: bash
       run: |
@@ -71,19 +50,14 @@ runs:
         python -m pip install aider-install
         aider-install
         uv tool run --from aider-chat pip install boto3
-
-    - name: Print Aider version
+    - name: Print versions
       shell: bash
       run: |
-        echo "Aider version:"
+        bun --version
+        python --version
+        pip --version
+        gh --version
         aider --version
-
-    - name: Generate PR description
-      id: generator
-      shell: bash
-      run: |
-        chmod +x ${{ github.action_path }}/scripts/generate-pr.sh
-        ${{ github.action_path }}/scripts/generate-pr.sh
 
     - name: Run main code
       shell: bash

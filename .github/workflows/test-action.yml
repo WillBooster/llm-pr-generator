@@ -15,7 +15,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test LLM PR Generator (Local)
-        id: generate
         uses: ./ # This references the action in the current repository
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -24,8 +23,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION_NAME: us-west-2
           GH_TOKEN: ${{ github.token }}
-
-      - name: Display PR Description Output
-        run: |
-          echo "PR Description Output:"
-          echo "${{ steps.generate.outputs.pr-description }}"
