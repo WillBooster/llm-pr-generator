@@ -1,8 +1,9 @@
 name: Test Action
 
 on:
-  label:
-    types: [created, edited]
+  issues:
+    types:
+      - labeled
 
 jobs:
   test-action:
