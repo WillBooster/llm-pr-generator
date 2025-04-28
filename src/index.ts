@@ -23,72 +23,70 @@ const argv = yargs(hideBin(process.argv))
   .alias('help', 'h')
   .parseSync();
 
-const issueNumber = argv.issue;
+function main(): void {
+  const issueNumber = argv.issue;
 
-const ret = child_process.spawnSync(
-  'gh',
-  ['issue', 'view', issueNumber.toString(), '--json', 'author,title,body,labels,comments'],
-  {
-    encoding: 'utf8',
-    stdio: 'pipe',
+  const ret = child_process.spawnSync(
+    'gh',
+    ['issue', 'view', issueNumber.toString(), '--json', 'author,title,body,labels,comments'],
+    {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    }
+  );
+  const issue: GitHubIssue = JSON.parse(ret.stdout);
+
+  if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
+    console.warn(chalk.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
+    process.exit(0);
   }
-);
-console.info('gh result:', ret);
-const issue: GitHubIssue = JSON.parse(ret.stdout);
 
-if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
-  console.warn(chalk.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
-  process.exit(0);
-}
-
-const issueContent = {
-  author: issue.author.login,
-  title: issue.title,
-  description: issue.body,
-  comments: issue.comments.map((c) => ({
-    author: c.author.login,
-    body: c.body,
-  })),
-};
-
-const prompt = `
+  const issueContent = {
+    author: issue.author.login,
+    title: issue.title,
+    description: issue.body,
+    comments: issue.comments.map((c) => ({
+      author: c.author.login,
+      body: c.body,
+    })),
+  };
+  const prompt = `
 Modify the code to solve the following GitHub issue:
 \`\`\`\`yml
 ${YAML.stringify(issueContent).trim()}
 \`\`\`\`
 `.trim();
 
-console.info(prompt);
+  const now = new Date();
 
-const now = new Date();
+  const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}`;
+  runCommand('git', ['switch', '-C', branchName]);
 
-const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}`;
-runCommand('git', ['switch', '-C', branchName]);
+  // Build aider command arguments
+  const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
+  if (argv['aider-args']) {
+    aiderArgs.push(...argv['aider-args'].split(/\s+/));
+  }
+  aiderArgs.push('--message', prompt);
+  console.info(chalk.green(`$ aider ${aiderArgs}`));
+  const aiderResult = child_process.spawnSync('aider', aiderArgs, { encoding: 'utf8', stdio: 'pipe' });
+  const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
 
-// Build aider command arguments
-const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
-if (argv['aider-args']) {
-  aiderArgs.push(...argv['aider-args'].split(/\s+/));
-}
-aiderArgs.push('--message', prompt);
-console.info(chalk.green(`$ aider ${aiderArgs}`));
-const aiderResult = child_process.spawnSync('aider', aiderArgs, { encoding: 'utf8', stdio: 'pipe' });
-const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
+  runCommand('git', ['push', 'origin', branchName]);
 
-runCommand('git', ['push', 'origin', branchName]);
-
-// Create a PR using GitHub CLI
-const repo = getGitRepoName();
-const prTitle = getHeaderOfLastCommit();
-const prBody = `Closes #${issueNumber}
+  // Create a PR using GitHub CLI
+  const repo = getGitRepoName();
+  const prTitle = getHeaderOfLastCommit();
+  const prBody = `Closes #${issueNumber}
 
 \`\`\`\`
 ${aiderAnswer}
 \`\`\`\``;
-runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repo]);
+  runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repo]);
 
-console.info(`\nIssue #${issueNumber} processed successfully.`);
-console.info('AWS_REGION:', process.env.AWS_REGION);
+  console.info(`\nIssue #${issueNumber} processed successfully.`);
+  console.info('AWS_REGION:', process.env.AWS_REGION);
+}
 
 function getTwoDigits(value: number): string {
   return String(value).padStart(2, '0');
@@ -100,7 +98,6 @@ function runCommand(command: string, args: string[]): void {
 }
 
 function getGitRepoName(): string {
-  // Get the repository URL to avoid the interactive prompt
   const repoUrlResult = child_process.spawnSync('git', ['remote', 'get-url', 'origin'], {
     encoding: 'utf8',
     stdio: 'pipe',
@@ -117,3 +114,5 @@ function getHeaderOfLastCommit(): string {
   });
   return lastCommitResult.stdout.trim();
 }
+
+main();
