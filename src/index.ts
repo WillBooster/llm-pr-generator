@@ -85,7 +85,7 @@ ${aiderAnswer}
   runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repo]);
 
   console.info(`\nIssue #${issueNumber} processed successfully.`);
-  console.info('AWS_REGION:', process.env.AWS_REGION);
+  console.info('AWS_REGION_NAME:', process.env.AWS_REGION_NAME);
 }
 
 function getTwoDigits(value: number): string {

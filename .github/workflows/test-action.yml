@@ -22,7 +22,9 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
         env:
-          AWS_REGION: us-west-2
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION_NAME: us-west-2
           GH_TOKEN: ${{ github.token }}
 
       - name: Display PR Description Output
