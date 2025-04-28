@@ -74,6 +74,10 @@ runCommand('aider', aiderArgs);
 
 runCommand('git', ['push', 'origin', branchName]);
 
+// Create a PR using GitHub CLI
+const prBody = `Closes #${issueNumber}`;
+runCommand('gh', ['pr', 'create', '--body', prBody]);
+
 console.info(`\nIssue #${issueNumber} processed successfully.`);
 console.info('AWS_REGION:', process.env.AWS_REGION);
 
