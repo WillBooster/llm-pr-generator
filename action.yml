@@ -68,8 +68,9 @@ runs:
       shell: bash
       run: |
         echo "Installing Aider..."
-        python -m pip install aider-install boto3
+        python -m pip install aider-install
         aider-install
+        uv tool run --from aider-chat pip install boto3
 
     - name: Print Aider version
       shell: bash
