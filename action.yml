@@ -64,6 +64,11 @@ runs:
         echo "GitHub CLI version:"
         gh --version
 
+    - name: Print Hello World
+      shell: bash
+      run: |
+        echo "Hello, World!"
+
     - name: Install Aider
       shell: bash
       run: |
