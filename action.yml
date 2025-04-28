@@ -23,6 +23,10 @@ runs:
       with:
         fetch-depth: 0
 
+    - name: Print Hello World
+      shell: bash
+      run: echo "Hello, World!"
+
     - name: Extract versions from .tool-versions
       id: versions
       shell: bash
