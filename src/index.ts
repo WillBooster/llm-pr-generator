@@ -61,7 +61,8 @@ ${YAML.stringify(issueContent).trim()}
 console.info(prompt);
 
 const now = new Date();
-const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+
+const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}`;
 runCommand('git', ['switch', '-C', branchName]);
 
 // Build aider command arguments
@@ -84,6 +85,10 @@ runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo'
 
 console.info(`\nIssue #${issueNumber} processed successfully.`);
 console.info('AWS_REGION:', process.env.AWS_REGION);
+
+function getTwoDigits(value: number): string {
+  return String(value).padStart(2, '0');
+}
 
 function runCommand(command: string, args: string[]): void {
   console.info(chalk.green(`$ ${command} ${args}`));
