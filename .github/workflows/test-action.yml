@@ -1,9 +1,6 @@
 name: Test Action
 
 on:
-  # Manual trigger
-  workflow_dispatch:
-  # Trigger on label events
   label:
     types: [created, edited]
 
