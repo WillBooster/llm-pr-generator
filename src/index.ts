@@ -70,13 +70,20 @@ if (argv['aider-args']) {
   aiderArgs.push(...argv['aider-args'].split(/\s+/));
 }
 aiderArgs.push('--message', prompt);
-runCommand('aider', aiderArgs);
+console.info(chalk.green(`$ aider ${aiderArgs}`));
+const aiderResult = child_process.spawnSync('aider', aiderArgs, { encoding: 'utf8', stdio: 'pipe' });
+const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
 
 runCommand('git', ['push', 'origin', branchName]);
 
 // Create a PR using GitHub CLI
-const prBody = `Closes #${issueNumber}`;
-runCommand('gh', ['pr', 'create', '--body', prBody]);
+const lastCommitResult = child_process.spawnSync('git', ['log', '-1', '--pretty=%s'], {
+  encoding: 'utf8',
+  stdio: 'pipe',
+});
+const prTitle = lastCommitResult.stdout.trim();
+const prBody = `Closes #${issueNumber}\n\n${aiderAnswer}`;
+runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody]);
 
 console.info(`\nIssue #${issueNumber} processed successfully.`);
 console.info('AWS_REGION:', process.env.AWS_REGION);
