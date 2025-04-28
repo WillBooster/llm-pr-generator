@@ -86,6 +86,10 @@ runs:
         echo "Aider version:"
         aider --version
 
+    - name: Print Hello World
+      shell: bash
+      run: echo "Hello, World!"
+
     - name: Generate PR description
       id: generator
       shell: bash
