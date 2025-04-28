@@ -1,4 +1,4 @@
-name: Test Action
+name: Generate PR (example)
 
 on:
   issues:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test LLM PR Generator (Local)
+      - name: Generate PR with LLMs
         uses: ./ # This references the action in the current repository
         with:
           issue-number: ${{ github.event.issue.number }}
