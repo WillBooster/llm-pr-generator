@@ -13,7 +13,7 @@ export function main(issueNumber: number): void {
   runCommand('aider-install', []);
   runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
-  const issueResult = runCommandAndGetStdout('gh', [
+  const issueResult = runCommand('gh', [
     'issue',
     'view',
     issueNumber.toString(),
@@ -80,19 +80,15 @@ function getTwoDigits(value: number): string {
   return String(value).padStart(2, '0');
 }
 
-function runCommand(command: string, args: string[]): void {
-  console.info(chalk.green(`$ ${command} ${args}`));
-  child_process.spawnSync(command, args, { stdio: 'inherit' });
-}
-
-function runCommandAndGetStdout(command: string, args: string[]): string {
+function runCommand(command: string, args: string[]): string {
   console.info(chalk.green(`$ ${command} ${args}`));
   const ret = child_process.spawnSync(command, args, { encoding: 'utf8', stdio: 'pipe' });
   console.info(chalk.yellow(`Exit code: ${ret.status}`));
-  console.info('stdout:');
+  console.info('stdout: ---------------------');
   console.info(chalk.cyan(ret.stdout.trim()));
-  console.info('stderr:');
+  console.info('stderr: ---------------------');
   console.info(chalk.magenta(ret.stderr.trim()));
+  console.info('-----------------------------');
   if (ret.status !== 0) {
     process.exit(ret.status);
   }
