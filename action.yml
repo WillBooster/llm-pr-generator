@@ -58,10 +58,11 @@ runs:
         pip --version
         gh --version
         aider --version
+        ls -al
 
     - name: Run main code
       shell: bash
-      run: bun src/index.ts --issue ${{ inputs.issue-number }}
+      run: bun dist/index.js --issue ${{ inputs.issue-number }}
 
 # Add branding to make your action stand out in the marketplace
 branding:
