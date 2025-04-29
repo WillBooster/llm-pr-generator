@@ -1,9 +1,11 @@
 import child_process from 'node:child_process';
 import chalk from 'chalk';
+import supportsColor from 'supports-color';
 import YAML from 'yaml';
 import type { GitHubIssue } from './types';
 
 process.env.FORCE_COLOR = '3';
+console.log(`Supports color: ${JSON.stringify(supportsColor)}`);
 
 const aiderExtraArgs =
   '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0';
@@ -56,8 +58,8 @@ ${YAML.stringify(issueContent).trim()}
   aiderArgs.push('--message', prompt);
   console.info(chalk.green(`$ aider ${aiderArgs}`));
   process.env.FORCE_COLOR = '';
-  const aiderResult = child_process.spawnSync('aider', aiderArgs, { encoding: 'utf8', stdio: 'pipe' });
-  const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
+  const aiderResult = runCommand('aider', aiderArgs);
+  const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
   process.env.FORCE_COLOR = '3';
 
   runCommand('git', ['push', 'origin', branchName]);
@@ -83,12 +85,14 @@ function getTwoDigits(value: number): string {
 function runCommand(command: string, args: string[]): string {
   console.info(chalk.green(`$ ${command} ${args}`));
   const ret = child_process.spawnSync(command, args, { encoding: 'utf8', stdio: 'pipe' });
+  console.info();
   console.info(chalk.yellow(`Exit code: ${ret.status}`));
   console.info('stdout: ---------------------');
   console.info(chalk.cyan(ret.stdout.trim()));
   console.info('stderr: ---------------------');
   console.info(chalk.magenta(ret.stderr.trim()));
   console.info('-----------------------------');
+  console.info();
   if (ret.status !== 0) {
     process.exit(ret.status);
   }
