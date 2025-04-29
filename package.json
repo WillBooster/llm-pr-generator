@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "author": "WillBooster Inc.",
   "scripts": {
-    "build": "build-ts app",
+    "build": "bun --bun build-ts app",
     "check-all": "bun run cleanup && bun run typecheck && bun run test",
     "cleanup": "bun --bun wb lint --fix --format",
     "format": "bun --bun wb lint --format",
@@ -13,6 +13,7 @@
     "lint-fix": "bun --bun wb lint --fix",
     "prepare": "lefthook install || true",
     "start": "bun src/index.ts",
+    "start-prod": "bun run build && bun dist/index.js",
     "test": "bun wb test",
     "typecheck": "bun --bun wb typecheck"
   },
