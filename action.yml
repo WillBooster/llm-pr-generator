@@ -1,4 +1,4 @@
-name: 'LLM PR Generator'
+name: 'Generate PR with LLM'
 description: 'A GitHub Action that generates pull requests using LLMs'
 author: 'WillBooster Inc.'
 

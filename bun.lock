@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "llm-pr-generator",
+      "name": "generate-pr-with-llm",
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@types/bun": "1.2.10",

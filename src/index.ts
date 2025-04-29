@@ -36,10 +36,10 @@ function main(): void {
   );
   const issue: GitHubIssue = JSON.parse(ret.stdout);
 
-  if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
-    console.warn(chalk.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
-    process.exit(0);
-  }
+  // if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
+  //   console.warn(chalk.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
+  //   process.exit(0);
+  // }
 
   const issueContent = {
     author: issue.author.login,

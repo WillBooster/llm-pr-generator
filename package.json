@@ -1,8 +1,8 @@
 {
-  "name": "llm-pr-generator",
+  "name": "generate-pr-with-llm",
   "version": "0.0.0-semantically-released",
   "private": true,
-  "repository": "github:WillBooster/llm-pr-generator",
+  "repository": "github:WillBooster/generate-pr-with-llm",
   "license": "Apache-2.0",
   "author": "WillBooster Inc.",
   "scripts": {
