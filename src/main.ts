@@ -93,6 +93,9 @@ function runCommandAndGetStdout(command: string, args: string[]): string {
   console.info(chalk.cyan(ret.stdout.trim()));
   console.info('stderr:');
   console.info(chalk.magenta(ret.stderr.trim()));
+  if (ret.status !== 0) {
+    process.exit(ret.status);
+  }
   return ret.stdout;
 }
 
