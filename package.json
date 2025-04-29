@@ -14,7 +14,7 @@
     "lint-fix": "bun --bun wb lint --fix",
     "prepare": "lefthook install || true",
     "start": "bun src/index.ts",
-    "start-prod": "bun run build && bun dist/index.js",
+    "start-prod": "bun run build && node dist/index.js",
     "test": "bun wb test",
     "typecheck": "bun --bun wb typecheck"
   },
