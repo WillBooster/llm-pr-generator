@@ -19,7 +19,9 @@
     "typecheck": "bun --bun wb typecheck"
   },
   "prettier": "@willbooster/prettier-config",
-  "dependencies": {},
+  "dependencies": {
+    "@actions/core": "1.11.1"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/bun": "1.2.10",

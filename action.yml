@@ -8,61 +8,10 @@ inputs:
     description: 'The issue (or PR) number to reference when generating the PR'
     required: true
 
-# Define the outputs for your action
-outputs:
-  pr-description:
-    description: 'The generated PR description'
-    value: ${{ steps.generator.outputs.pr-description }}
-
 # Define the runs configuration
 runs:
-  using: 'composite'
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Extract versions from .tool-versions
-      id: versions
-      shell: bash
-      run: |
-        BUN_VERSION=$(grep "^bun " .tool-versions | cut -d' ' -f2)
-        PYTHON_VERSION=$(grep "^python " .tool-versions | cut -d' ' -f2)
-        echo "bun-version=$BUN_VERSION" >> $GITHUB_OUTPUT
-        echo "python-version=$PYTHON_VERSION" >> $GITHUB_OUTPUT
-        echo "Extracted versions from .tool-versions:"
-        echo "Bun: $BUN_VERSION"
-        echo "Python: $PYTHON_VERSION"
-
-    - name: Set up Bun
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: ${{ steps.versions.outputs.bun-version }}
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ steps.versions.outputs.python-version }}
-    - name: Install Aider
-      shell: bash
-      run: |
-        echo "Installing Aider..."
-        python -m pip install aider-install
-        aider-install
-        uv tool run --from aider-chat pip install boto3
-    - name: Print versions
-      shell: bash
-      run: |
-        bun --version
-        python --version
-        pip --version
-        gh --version
-        aider --version
-        ls -al
-
-    - name: Run main code
-      shell: bash
-      run: bun dist/index.js --issue ${{ inputs.issue-number }}
+  using: 'node22'
+  main: 'dist/main.js'
 
 # Add branding to make your action stand out in the marketplace
 branding:

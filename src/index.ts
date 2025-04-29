@@ -1,30 +1,19 @@
 import child_process from 'node:child_process';
+import core from '@actions/core';
 import chalk from 'chalk';
 import YAML from 'yaml';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import type { GitHubIssue } from './types';
 
-// Parse command line arguments
-const argv = yargs(hideBin(process.argv))
-  .option('issue', {
-    alias: 'i',
-    description: 'GitHub issue (or PR) number',
-    type: 'number',
-    demandOption: true,
-  })
-  .option('aider-args', {
-    description: 'Arguments to pass to aider',
-    type: 'string',
-    default:
-      '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0',
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+// Get inputs
+const issueNumber = core.getInput('issue-number', { required: true });
+
+const aiderExtraArgs =
+  '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0';
 
 function main(): void {
-  const issueNumber = argv.issue;
+  runCommand('python', ['-m', 'pip', 'install aider-install']);
+  runCommand('aider-install', []);
+  runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install boto3']);
 
   const ret = child_process.spawnSync(
     'gh',
@@ -64,8 +53,8 @@ ${YAML.stringify(issueContent).trim()}
 
   // Build aider command arguments
   const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
-  if (argv['aider-args']) {
-    aiderArgs.push(...argv['aider-args'].split(/\s+/));
+  if (aiderExtraArgs) {
+    aiderArgs.push(...aiderExtraArgs.split(/\s+/));
   }
   aiderArgs.push('--message', prompt);
   console.info(chalk.green(`$ aider ${aiderArgs}`));
