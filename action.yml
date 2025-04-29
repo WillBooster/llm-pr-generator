@@ -1,5 +1,5 @@
 name: 'Generate PR with LLM'
-description: 'A GitHub Action that generates pull requests using LLMs'
+description: 'A GitHub Action that generates pull requests using LLMs.'
 author: 'WillBooster Inc.'
 
 # Define the inputs for your action
