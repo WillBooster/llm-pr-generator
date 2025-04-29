@@ -10,7 +10,7 @@ inputs:
 
 # Define the runs configuration
 runs:
-  using: 'node22'
+  using: 'node20'
   main: 'dist/main.js'
 
 # Add branding to make your action stand out in the marketplace
