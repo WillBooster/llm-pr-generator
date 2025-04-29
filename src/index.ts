@@ -4,6 +4,9 @@ import path from 'node:path';
 import core from '@actions/core';
 import { main } from './main';
 
+// Add Hello World output
+console.log('Hello, World!');
+
 // Get inputs
 const issueNumber = core.getInput('issue-number', { required: true });
 
