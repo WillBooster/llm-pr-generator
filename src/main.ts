@@ -86,13 +86,13 @@ function getTwoDigits(value: number): string {
 function runCommand(command: string, args: string[]): string {
   console.info(chalk.green(`$ ${command} ${args}`));
   const ret = child_process.spawnSync(command, args, { encoding: 'utf8', stdio: 'pipe' });
-  console.info(chalk.yellow(`Exit code: ${ret.status}`));
   console.info('stdout: ---------------------');
   console.info(chalk.cyan(ret.stdout.trim()));
   console.info('stderr: ---------------------');
   console.info(chalk.magenta(ret.stderr.trim()));
   console.info('-----------------------------');
-  console.info('|');
+  console.info(chalk.yellow(`Exit code: ${ret.status}`));
+  console.info(' ');
   if (ret.status !== 0) {
     process.exit(ret.status);
   }
