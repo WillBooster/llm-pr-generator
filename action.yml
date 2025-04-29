@@ -11,7 +11,7 @@ inputs:
 # Define the runs configuration
 runs:
   using: 'node20'
-  main: 'dist/main.js'
+  main: 'dist/index.js'
 
 # Add branding to make your action stand out in the marketplace
 branding:
