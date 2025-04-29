@@ -1,31 +1,26 @@
 import child_process from 'node:child_process';
-import core from '@actions/core';
 import chalk from 'chalk';
 import YAML from 'yaml';
 import type { GitHubIssue } from './types';
 
-console.log('Hello, World!');
-
-// Get inputs
-const issueNumber = core.getInput('issue-number', { required: true });
+process.env.FORCE_COLOR = '3';
 
 const aiderExtraArgs =
   '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0';
 
-function main(): void {
+export function main(issueNumber: number): void {
   runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
   runCommand('aider-install', []);
   runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
-  const ret = child_process.spawnSync(
-    'gh',
-    ['issue', 'view', issueNumber.toString(), '--json', 'author,title,body,labels,comments'],
-    {
-      encoding: 'utf8',
-      stdio: 'pipe',
-    }
-  );
-  const issue: GitHubIssue = JSON.parse(ret.stdout);
+  const issueResult = runCommandAndGetStdout('gh', [
+    'issue',
+    'view',
+    issueNumber.toString(),
+    '--json',
+    'author,title,body,labels,comments',
+  ]);
+  const issue: GitHubIssue = JSON.parse(issueResult);
 
   // if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
   //   console.warn(chalk.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
@@ -88,6 +83,17 @@ function runCommand(command: string, args: string[]): void {
   child_process.spawnSync(command, args, { stdio: 'inherit' });
 }
 
+function runCommandAndGetStdout(command: string, args: string[]): string {
+  console.info(chalk.green(`$ ${command} ${args}`));
+  const ret = child_process.spawnSync(command, args, { encoding: 'utf8', stdio: 'pipe' });
+  console.info(chalk.yellow(`Exit code: ${ret.status}`));
+  console.info('stdout:');
+  console.info(chalk.cyan(ret.stdout.trim()));
+  console.info('stderr:');
+  console.info(chalk.magenta(ret.stderr.trim()));
+  return ret.stdout;
+}
+
 function getGitRepoName(): string {
   const repoUrlResult = child_process.spawnSync('git', ['remote', 'get-url', 'origin'], {
     encoding: 'utf8',
@@ -106,5 +112,3 @@ function getHeaderOfFirstCommit(): string {
   });
   return firstCommitResult.stdout.trim();
 }
-
-main();

@@ -6,15 +6,14 @@
   "license": "Apache-2.0",
   "author": "WillBooster Inc.",
   "scripts": {
-    "build": "build-ts app . --bundleBuiltins undici",
+    "build": "build-ts app --bundleBuiltins undici",
     "check-all": "bun run cleanup && bun run typecheck && bun run test",
     "cleanup": "bun --bun wb lint --fix --format",
     "format": "bun --bun wb lint --format",
     "lint": "bun --bun wb lint",
     "lint-fix": "bun --bun wb lint --fix",
     "prepare": "lefthook install || true",
-    "start": "bun src/index.ts",
-    "start-prod": "bun run build && node dist/index.js",
+    "start": "bun src/tester.ts",
     "test": "bun wb test",
     "typecheck": "bun --bun wb typecheck"
   },
