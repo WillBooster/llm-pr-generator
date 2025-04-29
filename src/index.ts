@@ -7,6 +7,9 @@ import { main } from './main';
 // Get inputs
 const issueNumber = core.getInput('issue-number', { required: true });
 
+// Add Hello World message (with comma)
+console.log('Hello, World!');
+
 // cf. https://github.com/cli/cli/issues/8441#issuecomment-1870271857
 fs.rmSync(path.join(os.homedir(), '.config', 'gh'), { force: true, recursive: true });
 
