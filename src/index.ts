@@ -11,9 +11,9 @@ const aiderExtraArgs =
   '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0';
 
 function main(): void {
-  runCommand('python', ['-m', 'pip', 'install aider-install']);
+  runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
   runCommand('aider-install', []);
-  runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install boto3']);
+  runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
   const ret = child_process.spawnSync(
     'gh',
