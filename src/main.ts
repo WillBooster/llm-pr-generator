@@ -4,7 +4,8 @@ import supportsColor from 'supports-color';
 import YAML from 'yaml';
 import type { GitHubIssue } from './types';
 
-process.env.FORCE_COLOR = '3';
+// cf. https://github.com/chalk/supports-color/issues/106#issuecomment-1970171791
+process.env.FORCE_COLOR = '2';
 console.info(`Supports color: ${JSON.stringify(supportsColor)}`);
 
 const aiderExtraArgs =
@@ -60,7 +61,7 @@ ${YAML.stringify(issueContent).trim()}
   process.env.FORCE_COLOR = '';
   const aiderResult = runCommand('aider', aiderArgs);
   const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
-  process.env.FORCE_COLOR = '3';
+  process.env.FORCE_COLOR = '2';
 
   runCommand('git', ['push', 'origin', branchName]);
 
