@@ -4,8 +4,6 @@ import chalk from 'chalk';
 import YAML from 'yaml';
 import type { GitHubIssue } from './types';
 
-console.log('Hello, World!');
-
 // Get inputs
 const issueNumber = core.getInput('issue-number', { required: true });
 
