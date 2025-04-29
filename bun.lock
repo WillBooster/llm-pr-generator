@@ -12,7 +12,7 @@
         "@willbooster/biome-config": "2.1.0",
         "@willbooster/prettier-config": "10.0.0",
         "@willbooster/wb": "8.0.42",
-        "build-ts": "13.1.40",
+        "build-ts": "13.2.1",
         "chalk": "5.4.1",
         "conventional-changelog-conventionalcommits": "8.0.0",
         "lefthook": "1.11.12",
@@ -20,6 +20,7 @@
         "semantic-release": "24.2.3",
         "sort-package-json": "3.0.0",
         "typescript": "5.8.3",
+        "undici": "7.8.0",
         "yaml": "2.7.1",
         "yargs": "17.7.2",
       },
@@ -504,7 +505,7 @@
 
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
 
-    "build-ts": ["build-ts@13.1.40", "", { "dependencies": { "@babel/core": "7.26.10", "@babel/plugin-proposal-decorators": "7.25.9", "@babel/plugin-proposal-explicit-resource-management": "7.25.9", "@babel/plugin-syntax-import-attributes": "7.26.0", "@babel/plugin-transform-runtime": "7.26.10", "@babel/preset-env": "7.26.9", "@babel/preset-react": "7.26.3", "@babel/preset-typescript": "7.27.0", "@rollup/plugin-babel": "6.0.4", "@rollup/plugin-commonjs": "28.0.3", "@rollup/plugin-json": "6.1.0", "@rollup/plugin-node-resolve": "16.0.1", "@rollup/plugin-replace": "6.0.2", "@rollup/plugin-terser": "0.4.4", "@rollup/pluginutils": "5.1.4", "@willbooster/shared-lib-node": "6.1.16", "babel-plugin-polyfill-corejs3": "0.12.0", "babel-plugin-transform-remove-console": "6.9.4", "chalk": "5.4.1", "core-js": "3.41.0", "core-js-pure": "3.41.0", "date-time": "4.0.0", "pretty-ms": "9.2.0", "rollup": "4.40.0", "rollup-plugin-analyzer": "4.0.0", "rollup-plugin-keep-import": "1.0.3", "rollup-plugin-node-externals": "8.0.0", "rollup-plugin-preserve-directives": "0.4.0", "rollup-plugin-string": "3.0.0", "rollup-plugin-ts": "3.4.5", "signal-exit": "4.1.0", "tsx": "4.19.3", "typescript": "5.8.3", "yargs": "17.7.2" }, "bin": { "build-ts": "bin/index.js" } }, "sha512-pPd2oSRb7q9MjHTHmFjCP0sZxhDdWT7hE0uqNHS2nD08clzs11z28N9LaI1qHKjjnbl6M5qhuwXJKhA5P+iLIg=="],
+    "build-ts": ["build-ts@13.2.1", "", { "dependencies": { "@babel/core": "7.26.10", "@babel/plugin-proposal-decorators": "7.25.9", "@babel/plugin-proposal-explicit-resource-management": "7.25.9", "@babel/plugin-syntax-import-attributes": "7.26.0", "@babel/plugin-transform-runtime": "7.26.10", "@babel/preset-env": "7.26.9", "@babel/preset-react": "7.26.3", "@babel/preset-typescript": "7.27.0", "@rollup/plugin-babel": "6.0.4", "@rollup/plugin-commonjs": "28.0.3", "@rollup/plugin-json": "6.1.0", "@rollup/plugin-node-resolve": "16.0.1", "@rollup/plugin-replace": "6.0.2", "@rollup/plugin-terser": "0.4.4", "@rollup/pluginutils": "5.1.4", "@willbooster/shared-lib-node": "6.1.16", "babel-plugin-polyfill-corejs3": "0.12.0", "babel-plugin-transform-remove-console": "6.9.4", "chalk": "5.4.1", "core-js": "3.41.0", "core-js-pure": "3.41.0", "date-time": "4.0.0", "pretty-ms": "9.2.0", "rollup": "4.40.0", "rollup-plugin-analyzer": "4.0.0", "rollup-plugin-keep-import": "1.0.3", "rollup-plugin-node-externals": "8.0.0", "rollup-plugin-preserve-directives": "0.4.0", "rollup-plugin-string": "3.0.0", "rollup-plugin-ts": "3.4.5", "signal-exit": "4.1.0", "tsx": "4.19.3", "typescript": "5.8.3", "yargs": "17.7.2" }, "bin": { "build-ts": "bin/index.js" } }, "sha512-DbfaXq0yOwZYOen1t/s1+F6XiBUjZZSP8c1S4cs7TJXcAM+4xU1cQn6GuKKmBAbeJ2JM/CQyH2bN1VV4oBC0Fg=="],
 
     "bun-types": ["bun-types@1.2.10", "", { "dependencies": { "@types/node": "*" } }, "sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ=="],
 
@@ -1062,7 +1063,7 @@
 
     "uglify-js": ["uglify-js@3.19.3", "", { "bin": { "uglifyjs": "bin/uglifyjs" } }, "sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ=="],
 
-    "undici": ["undici@5.29.0", "", { "dependencies": { "@fastify/busboy": "^2.0.0" } }, "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg=="],
+    "undici": ["undici@7.8.0", "", {}, "sha512-vFv1GA99b7eKO1HG/4RPu2Is3FBTWBrmzqzO0mz+rLxN3yXkE4mqRcb8g8fHxzX4blEysrNZLqg5RbJLqX5buA=="],
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
 
@@ -1111,6 +1112,8 @@
     "yargs-parser": ["yargs-parser@21.1.1", "", {}, "sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw=="],
 
     "yoctocolors": ["yoctocolors@2.1.1", "", {}, "sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ=="],
+
+    "@actions/http-client/undici": ["undici@5.29.0", "", { "dependencies": { "@fastify/busboy": "^2.0.0" } }, "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg=="],
 
     "@babel/core/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
