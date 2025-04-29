@@ -10,4 +10,6 @@ const issueNumber = core.getInput('issue-number', { required: true });
 // cf. https://github.com/cli/cli/issues/8441#issuecomment-1870271857
 fs.rmSync(path.join(os.homedir(), '.config', 'gh'), { force: true, recursive: true });
 
+console.log('Hello, World!');
+
 main(Number(issueNumber));
