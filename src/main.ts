@@ -55,8 +55,10 @@ ${YAML.stringify(issueContent).trim()}
   }
   aiderArgs.push('--message', prompt);
   console.info(chalk.green(`$ aider ${aiderArgs}`));
+  process.env.FORCE_COLOR = '';
   const aiderResult = child_process.spawnSync('aider', aiderArgs, { encoding: 'utf8', stdio: 'pipe' });
   const aiderAnswer = aiderResult.stdout.split(/─+/).at(-1)?.trim() ?? '';
+  process.env.FORCE_COLOR = '3';
 
   runCommand('git', ['push', 'origin', branchName]);
 
