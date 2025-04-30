@@ -1,4 +1,5 @@
 import child_process from 'node:child_process';
+import { setTimeout } from 'node:timers/promises';
 import chalk from 'chalk';
 import supportsColor from 'supports-color';
 import YAML from 'yaml';
@@ -11,12 +12,12 @@ console.info(`Supports color: ${JSON.stringify(supportsColor)}`);
 const aiderExtraArgs =
   '--architect --model bedrock/converse/us.deepseek.r1-v1:0 --editor-model bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0';
 
-export function main(issueNumber: number): void {
-  runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
-  runCommand('aider-install', []);
-  runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
+export async function main(issueNumber: number): Promise<void> {
+  await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
+  await runCommand('aider-install', []);
+  await runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
-  const issueResult = runCommand('gh', [
+  const issueResult = await runCommand('gh', [
     'issue',
     'view',
     issueNumber.toString(),
@@ -49,7 +50,7 @@ ${YAML.stringify(issueContent).trim()}
   const now = new Date();
 
   const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
-  runCommand('git', ['switch', '-C', branchName]);
+  await runCommand('git', ['switch', '-C', branchName]);
 
   // Build aider command arguments
   const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
@@ -59,11 +60,11 @@ ${YAML.stringify(issueContent).trim()}
   aiderArgs.push('--message', prompt);
   console.info(chalk.green(`$ aider ${aiderArgs}`));
   process.env.FORCE_COLOR = '';
-  const aiderResult = runCommand('aider', aiderArgs);
+  const aiderResult = await runCommand('aider', aiderArgs);
   const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
   process.env.FORCE_COLOR = '2';
 
-  runCommand('git', ['push', 'origin', branchName]);
+  await runCommand('git', ['push', 'origin', branchName]);
 
   // Create a PR using GitHub CLI
   const repo = getGitRepoName();
@@ -83,9 +84,10 @@ function getTwoDigits(value: number): string {
   return String(value).padStart(2, '0');
 }
 
-function runCommand(command: string, args: string[]): string {
+async function runCommand(command: string, args: string[]): Promise<string> {
   console.info(chalk.green(`$ ${command} ${args}`));
   const ret = child_process.spawnSync(command, args, { encoding: 'utf8', stdio: 'pipe' });
+  console.info(chalk.yellow(`Exit code: ${ret.status}`));
   console.info('stdout: ---------------------');
   console.info(chalk.cyan(ret.stdout.trim()));
   console.info('stderr: ---------------------');
@@ -94,6 +96,7 @@ function runCommand(command: string, args: string[]): string {
   console.info(chalk.yellow(`Exit code: ${ret.status}`));
   console.info(' ');
   if (ret.status !== 0) {
+    await setTimeout(1000);
     process.exit(ret.status);
   }
   return ret.stdout;
