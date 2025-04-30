@@ -7,7 +7,7 @@ on:
 
 jobs:
   generate-pr:
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
     # Only run if the label name includes 'llm-pr' and an issue number is available
     if: contains(github.event.label.name, 'llm-pr') && github.event.issue.number != null
     steps:

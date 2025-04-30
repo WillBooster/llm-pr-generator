@@ -95,7 +95,7 @@ async function runCommand(command: string, args: string[]): Promise<string> {
   console.info('-----------------------------');
   console.info(chalk.yellow(`Exit code: ${ret.status}`));
   console.info(' ');
-  if (ret.status !== 0) {
+  if (ret.status !== 0 && ret.status !== null) {
     await setTimeout(1000);
     process.exit(ret.status);
   }
