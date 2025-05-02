@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import YAML from 'yaml';
 import { callLlmApi, getApiUrlAndKey } from './llm';
 import type { ReasoningEffort } from './types';
+import { parseCommandLineArgs } from './utils';
 
 import { DEFAULT_REPOMIX_EXTRA_ARGS } from './defaultOptions';
 import { runCommand } from './spawn';
@@ -17,8 +18,8 @@ export async function selectFilesToBeModified(
   const { url, apiKey } = getApiUrlAndKey(model);
 
   // Base repomix command arguments
-  const repomixArgs = ['--yes', 'repomix', '--output', REPOMIX_FILE_NAME];
-  repomixArgs.push(...(repomixExtraArgs || DEFAULT_REPOMIX_EXTRA_ARGS).split(/\s+/));
+  const repomixArgs = ['--yes', 'repomix@latest', '--output', REPOMIX_FILE_NAME];
+  repomixArgs.push(...parseCommandLineArgs(repomixExtraArgs || DEFAULT_REPOMIX_EXTRA_ARGS));
 
   await runCommand('npx', repomixArgs);
   const context = fs.readFileSync(REPOMIX_FILE_NAME, 'utf8');

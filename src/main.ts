@@ -3,6 +3,7 @@ import ansis from 'ansis';
 import YAML from 'yaml';
 import { selectFilesToBeModified } from './selectFiles';
 import type { GitHubIssue, ReasoningEffort } from './types';
+import { parseCommandLineArgs } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { runCommand } from './spawn';
@@ -80,7 +81,7 @@ ${issueText}
 
   // Build aider command arguments
   const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
-  aiderArgs.push(...(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS).split(/\s+/));
+  aiderArgs.push(...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS));
   if (dryRun) {
     aiderArgs.push('--dry-run');
   }
