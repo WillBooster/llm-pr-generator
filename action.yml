@@ -7,11 +7,27 @@ inputs:
   issue-number:
     description: 'The issue (or PR) number to reference when generating the PR'
     required: true
+  model:
+    description: 'LLM model to use for selecting files to be modified'
+    required: false
+  reasoning-effort:
+    description: 'Constrains effort on reasoning for reasoning models. Supported values are low, medium, and high. Reducing reasoning effort can result in faster responses and fewer tokens used.'
+    required: false
+  aider-extra-args:
+    description: 'Additional arguments to pass to the aider command (e.g., "--model gemini/gemini-2.5-pro-preview-03-25")'
+    required: false
+  repomix-extra-args:
+    description: 'Extra arguments for repomix when generating context (e.g., "--ignore **/*.{json,md,out,sql},*ignore,.env*")'
+    required: false
+  dry-run:
+    description: 'Run without making actual changes (no branch creation, no PR)'
+    required: false
+    default: 'false'
 
 # Define the runs configuration
 runs:
   using: 'node20'
-  main: 'dist/index.js'
+  main: 'dist/action.js'
 
 # Add branding to make your action stand out in the marketplace
 branding:

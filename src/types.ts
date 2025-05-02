@@ -95,3 +95,12 @@ export interface GitHubIssue {
   /** The issue's title */
   title: string;
 }
+
+/**
+ * Represents the level of reasoning effort for LLM API calls
+ *
+ * - 'low': Faster responses with less reasoning
+ * - 'medium': Balanced reasoning and response time
+ * - 'high': More thorough reasoning (may be slower and use more tokens)
+ */
+export type ReasoningEffort = 'low' | 'medium' | 'high';

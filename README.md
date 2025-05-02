@@ -7,4 +7,4 @@ A GitHub Action that automatically generates pull requests using Large Language 
 
 ## License
 
-Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+Apache License 2.0

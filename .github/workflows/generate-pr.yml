@@ -16,6 +16,8 @@ jobs:
         uses: ./ # This references the action in the current repository
         with:
           issue-number: ${{ github.event.issue.number }}
+          # Uncomment to run in dry-run mode (no branches or PRs will be created)
+          # dry-run: 'true'
         env:
           # for Amazon (Bedrock)
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
