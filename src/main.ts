@@ -1,7 +1,7 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
-import { selectFilesToBeModified } from './selectFiles';
+import { planHowToResolveIssue } from './plan';
 import type { GitHubIssue, ReasoningEffort } from './types';
 import { parseCommandLineArgs } from './utils';
 
@@ -26,6 +26,8 @@ export interface MainOptions {
   repomixExtraArgs?: string;
 }
 
+const MAX_ANSWER_LENGTH = 60000;
+
 export async function main(options: MainOptions): Promise<void> {
   const { issueNumber, model, reasoningEffort, aiderExtraArgs } = options;
   const dryRun = options.dryRun ?? false;
@@ -33,6 +35,7 @@ export async function main(options: MainOptions): Promise<void> {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
   }
   await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
+  await runCommand('uv', ['tool', 'uninstall', 'aider-chat']);
   await runCommand('aider-install', []);
   await runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
@@ -60,15 +63,25 @@ export async function main(options: MainOptions): Promise<void> {
     })),
   };
   const issueText = YAML.stringify(issueObject).trim();
+  const resolutionPlan =
+    model && (await planHowToResolveIssue(model, issueText, reasoningEffort, options.repomixExtraArgs));
+  const planText =
+    resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
+      ? `
+# Plan
+
+${resolutionPlan.plan}
+`.trim()
+      : '';
   const prompt = `
-Modify the code to solve the following GitHub issue:
+Modify the code to resolve the following GitHub issue:
 \`\`\`\`yml
 ${issueText}
 \`\`\`\`
+
+${planText}
 `.trim();
-  const filePaths =
-    (model && (await selectFilesToBeModified(model, issueText, reasoningEffort, options.repomixExtraArgs))) || [];
-  console.log('Candidate files to be modified:', filePaths);
+  console.log('Resolution plan:', resolutionPlan);
 
   const now = new Date();
 
@@ -86,12 +99,13 @@ ${issueText}
     aiderArgs.push('--dry-run');
   }
   aiderArgs.push('--message', prompt);
-  aiderArgs.push(...filePaths);
-  const FORCE_COLOR = process.env.FORCE_COLOR;
-  process.env.FORCE_COLOR = '0';
-  const aiderResult = await runCommand('aider', aiderArgs);
+  if (resolutionPlan && 'filePaths' in resolutionPlan) {
+    aiderArgs.push(...resolutionPlan.filePaths);
+  }
+  const aiderResult = await runCommand('aider', aiderArgs, {
+    env: { ...process.env, FORCE_COLOR: '' },
+  });
   const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
-  process.env.FORCE_COLOR = FORCE_COLOR;
 
   if (!dryRun) {
     await runCommand('git', ['push', 'origin', branchName]);
@@ -104,7 +118,7 @@ ${issueText}
   const prBody = `Closes #${issueNumber}
 
 \`\`\`\`
-${aiderAnswer}
+${aiderAnswer.slice(0, MAX_ANSWER_LENGTH)}
 \`\`\`\``;
   if (!dryRun) {
     const repoName = getGitRepoName();
@@ -133,10 +147,9 @@ function getGitRepoName(): string {
 }
 
 function getHeaderOfFirstCommit(): string {
-  // Get the first commit of the diff from the main branch
-  const firstCommitResult = child_process.spawnSync('git', ['log', 'main..HEAD', '--reverse', '--pretty=%s', '-1'], {
+  const firstCommitResult = child_process.spawnSync('git', ['log', 'main..HEAD', '--reverse', '--pretty=%s'], {
     encoding: 'utf8',
     stdio: 'pipe',
   });
-  return firstCommitResult.stdout.trim();
+  return firstCommitResult.stdout.trim().split('\n')[0];
 }
