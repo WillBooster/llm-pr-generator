@@ -1,19 +1,16 @@
+import type { SpawnOptionsWithoutStdio } from 'node:child_process';
 import type { SpawnSyncReturns } from 'node:child_process';
 import { spawn } from 'node:child_process';
 import ansis from 'ansis';
 
-const noop = (text: string) => text;
-
-export async function runCommand(command: string, args: string[], addColor = true): Promise<string> {
+export async function runCommand(command: string, args: string[], options?: SpawnOptionsWithoutStdio): Promise<string> {
   console.info(ansis.green(`$ ${command} ${args}`));
-  const ret = await spawnAsync(command, args);
   console.info('stdout: ---------------------');
-  console.info((addColor ? ansis.cyan : noop)(ret.stdout.trim()));
+  const ret = await spawnAsync(command, args, options);
   console.info('stderr: ---------------------');
-  console.info((addColor ? ansis.magenta : noop)(ret.stderr.trim()));
+  console.info(ansis.yellow(ret.stderr.trim()));
   console.info('-----------------------------');
-  console.info(ansis.yellow(`Exit code: ${ret.status}`));
-  console.info(' ');
+  console.info(ansis.magenta(`Exit code: ${ret.status}\n`));
   if (ret.status !== 0 && ret.status !== null) {
     process.exit(ret.status);
   }
@@ -22,11 +19,12 @@ export async function runCommand(command: string, args: string[], addColor = tru
 
 export async function spawnAsync(
   command: string,
-  args?: ReadonlyArray<string>
+  args?: ReadonlyArray<string>,
+  options?: SpawnOptionsWithoutStdio
 ): Promise<Omit<SpawnSyncReturns<string>, 'output' | 'error'>> {
   return new Promise((resolve, reject) => {
     try {
-      const proc = spawn(command, args ?? []);
+      const proc = spawn(command, args ?? [], options);
       // `setEncoding` is undefined in Bun
       proc.stdout?.setEncoding?.('utf8');
       proc.stderr?.setEncoding?.('utf8');
@@ -34,6 +32,7 @@ export async function spawnAsync(
       let stdout = '';
       let stderr = '';
       proc.stdout?.on('data', (data) => {
+        process.stdout.write(data);
         stdout += data;
       });
       proc.stderr?.on('data', (data) => {
