@@ -16,6 +16,8 @@ export interface MainOptions {
   aiderExtraArgs?: string;
   /** Run without making actual changes (no branch creation, no PR) */
   dryRun?: boolean;
+  /** Whether to enable planning step (generates a detailed plan) */
+  enablePlanning?: boolean;
   /** GitHub issue number to process */
   issueNumber: number;
   /** LLM model to use for selecting files to be modified */
@@ -31,6 +33,7 @@ const MAX_ANSWER_LENGTH = 60000;
 export async function main(options: MainOptions): Promise<void> {
   const { issueNumber, model, reasoningEffort, aiderExtraArgs } = options;
   const dryRun = options.dryRun ?? false;
+  const enablePlanning = options.enablePlanning ?? true;
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
   }
@@ -64,7 +67,7 @@ export async function main(options: MainOptions): Promise<void> {
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    model && (await planHowToResolveIssue(model, issueText, reasoningEffort, options.repomixExtraArgs));
+    model && (await planHowToResolveIssue(model, issueText, enablePlanning, reasoningEffort, options.repomixExtraArgs));
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `

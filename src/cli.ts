@@ -38,6 +38,12 @@ const argv = await yargs(hideBin(process.argv))
     type: 'string',
     default: DEFAULT_REPOMIX_EXTRA_ARGS,
   })
+  .option('planning', {
+    alias: 'p',
+    description: 'Whether to generate a detailed plan to write code (increasing in LLM cost)',
+    type: 'boolean',
+    default: true,
+  })
   .option('dry-run', {
     alias: 'd',
     description: 'Run without making actual changes (no branch creation, no PR)',
@@ -61,6 +67,7 @@ if (argv['working-dir']) {
 await main({
   aiderExtraArgs: argv['aider-extra-args'],
   dryRun: argv['dry-run'],
+  enablePlanning: argv.planning,
   issueNumber: argv['issue-number'],
   model: argv.model,
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,

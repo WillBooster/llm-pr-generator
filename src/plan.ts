@@ -10,13 +10,14 @@ import { runCommand } from './spawn';
 const REPOMIX_FILE_NAME = 'repomix.result';
 
 export type ResolutionPlan = {
-  plan: string;
+  plan?: string;
   filePaths: string[];
 };
 
 export async function planHowToResolveIssue(
   model: string,
   issueContent: string,
+  planning: boolean,
   reasoningEffort?: ReasoningEffort,
   repomixExtraArgs?: string
 ): Promise<ResolutionPlan> {
@@ -29,12 +30,27 @@ export async function planHowToResolveIssue(
   await runCommand('npx', repomixArgs);
   const context = fs.readFileSync(REPOMIX_FILE_NAME, 'utf8');
   void fs.promises.rm(REPOMIX_FILE_NAME, { force: true });
+
+  const planningTask = planning
+    ? `
+- Identify the files from the provided list that will need to be modified to implement the plan and resolve the issue.`
+    : '';
+  const planFormat = planning
+    ? `# Plan to Resolve the Issue
+
+1. <Description of step 1>
+2. <Description of step 2>
+3. ...
+
+`
+    : '';
+
   const prompt = `
 Review the following GitHub issue and the following list of available file paths and their contents.
 Based on this information, please perform the following tasks:
 
-1. Create a step-by-step plan outlining how to address the GitHub issue. The plan should be detailed enough to guide a developer.
-2. Identify the files from the provided list that will need to be modified to implement the plan and resolve the issue.
+- Create a step-by-step plan outlining how to address the GitHub issue. The plan should be detailed enough to guide a developer.
+${planningTask}
 
 GitHub Issue:
 \`\`\`\`yml
@@ -45,13 +61,7 @@ Available files: The user will provide this as a separate message.
 
 Please format your response as follows:
 \`\`\`
-# Plan to Resolve the Issue
-
-1. <Description of step 1>
-2. <Description of step 2>
-3. ...
-
-# File Paths to be Modified
+${planFormat}# File Paths to be Modified
 
 - \`<filePath1>\`
 - \`<filePath2>\`
@@ -80,7 +90,7 @@ Ensure that the file paths are exactly as provided in the input.
   const planHeader = '# Plan to Resolve the Issue';
   const filesHeader = '# File Paths to be Modified';
 
-  let plan = '';
+  let plan: string | undefined;
   let filePaths: string[] = [];
 
   const planHeaderIndex = response.indexOf(planHeader);

@@ -19,6 +19,10 @@ inputs:
   repomix-extra-args:
     description: 'Extra arguments for repomix when generating context (e.g., "--ignore **/*.{json,md,out,sql},*ignore,.env*")'
     required: false
+  planning:
+    description: 'Whether to generate a detailed plan to write code'
+    required: false
+    default: 'true'
   dry-run:
     description: 'Run without making actual changes (no branch creation, no PR)'
     required: false
