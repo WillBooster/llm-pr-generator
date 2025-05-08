@@ -7,8 +7,8 @@ inputs:
   issue-number:
     description: 'The issue (or PR) number to reference when generating the PR'
     required: true
-  model:
-    description: 'LLM model to use for selecting files to be modified'
+  planning-model:
+    description: 'LLM model to use for planning code changes'
     required: false
   reasoning-effort:
     description: 'Constrains effort on reasoning for reasoning models. Supported values are low, medium, and high. Reducing reasoning effort can result in faster responses and fewer tokens used.'
@@ -19,8 +19,8 @@ inputs:
   repomix-extra-args:
     description: 'Extra arguments for repomix when generating context (e.g., "--ignore **/*.{json,md,out,sql},*ignore,.env*")'
     required: false
-  planning:
-    description: 'Whether to generate a detailed plan to write code'
+  detailed-plan:
+    description: 'Whether to generate a detailed plan to write code (increases LLM cost but improves quality)'
     required: false
     default: 'true'
   dry-run:

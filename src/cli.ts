@@ -14,15 +14,21 @@ const argv = await yargs(hideBin(process.argv))
     type: 'number',
     demandOption: true,
   })
-  .option('model', {
+  .option('planning-model', {
     alias: 'm',
-    description: 'LLM (OpenAI or Gemini) for selecting files to be modified',
+    description: 'LLM (OpenAI or Gemini) for planning code changes',
     type: 'string',
     demandOption: true,
   })
+  .option('detailed-plan', {
+    alias: 'p',
+    description: 'Whether to generate a detailed plan for code changes (increasing in LLM cost)',
+    type: 'boolean',
+    default: true,
+  })
   .option('reasoning-effort', {
     alias: 'e',
-    description: 'Constrains effort on reasoning for reasoning models. Supported values are low, medium, and high.',
+    description: 'Constrains effort on reasoning for planning models. Supported values are low, medium, and high.',
     type: 'string',
     choices: ['low', 'medium', 'high'],
   })
@@ -37,12 +43,6 @@ const argv = await yargs(hideBin(process.argv))
     description: 'Additional arguments for repomix when generating context',
     type: 'string',
     default: DEFAULT_REPOMIX_EXTRA_ARGS,
-  })
-  .option('planning', {
-    alias: 'p',
-    description: 'Whether to generate a detailed plan to write code (increasing in LLM cost)',
-    type: 'boolean',
-    default: true,
   })
   .option('dry-run', {
     alias: 'd',
@@ -67,9 +67,9 @@ if (argv['working-dir']) {
 await main({
   aiderExtraArgs: argv['aider-extra-args'],
   dryRun: argv['dry-run'],
-  enablePlanning: argv.planning,
+  enablePlanning: argv['detailed-plan'],
   issueNumber: argv['issue-number'],
-  model: argv.model,
+  model: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],
 });

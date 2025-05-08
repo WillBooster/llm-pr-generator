@@ -14,10 +14,10 @@ export type ResolutionPlan = {
   filePaths: string[];
 };
 
-export async function planHowToResolveIssue(
+export async function planCodeChanges(
   model: string,
   issueContent: string,
-  planning: boolean,
+  detailedPlan: boolean,
   reasoningEffort?: ReasoningEffort,
   repomixExtraArgs?: string
 ): Promise<ResolutionPlan> {
@@ -31,11 +31,11 @@ export async function planHowToResolveIssue(
   const context = fs.readFileSync(REPOMIX_FILE_NAME, 'utf8');
   void fs.promises.rm(REPOMIX_FILE_NAME, { force: true });
 
-  const planningTask = planning
+  const planningTask = detailedPlan
     ? `
 - Identify the files from the provided list that will need to be modified to implement the plan and resolve the issue.`
     : '';
-  const planFormat = planning
+  const planFormat = detailedPlan
     ? `# Plan to Resolve the Issue
 
 1. <Description of step 1>

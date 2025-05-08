@@ -1,7 +1,7 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
-import { planHowToResolveIssue } from './plan';
+import { planCodeChanges } from './plan';
 import type { GitHubIssue, ReasoningEffort } from './types';
 import { parseCommandLineArgs } from './utils';
 
@@ -16,11 +16,11 @@ export interface MainOptions {
   aiderExtraArgs?: string;
   /** Run without making actual changes (no branch creation, no PR) */
   dryRun: boolean;
-  /** Whether to enable planning step (generates a detailed plan) */
+  /** Whether to generate a detailed plan */
   enablePlanning: boolean;
   /** GitHub issue number to process */
   issueNumber: number;
-  /** LLM model to use for selecting files to be modified */
+  /** LLM model to use for planning code changes */
   model?: string;
   /** Level of reasoning effort for the LLM */
   reasoningEffort?: ReasoningEffort;
@@ -72,7 +72,7 @@ export async function main({
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    model && (await planHowToResolveIssue(model, issueText, enablePlanning, reasoningEffort, repomixExtraArgs));
+    model && (await planCodeChanges(model, issueText, enablePlanning, reasoningEffort, repomixExtraArgs));
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `
