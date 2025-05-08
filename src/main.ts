@@ -21,7 +21,7 @@ export interface MainOptions {
   /** GitHub issue number to process */
   issueNumber: number;
   /** LLM model to use for planning code changes */
-  model?: string;
+  planningModel?: string;
   /** Level of reasoning effort for the LLM */
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
@@ -35,7 +35,7 @@ export async function main({
   dryRun,
   detailedPlan,
   issueNumber,
-  model,
+  planningModel,
   reasoningEffort,
   repomixExtraArgs,
 }: MainOptions): Promise<void> {
@@ -72,7 +72,7 @@ export async function main({
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    model && (await planCodeChanges(model, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
+    planningModel && (await planCodeChanges(planningModel, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `

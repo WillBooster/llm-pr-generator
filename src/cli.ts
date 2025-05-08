@@ -68,7 +68,7 @@ await main({
   dryRun: argv['dry-run'],
   detailedPlan: argv['detailed-plan'],
   issueNumber: argv['issue-number'],
-  model: argv['planning-model'],
+  planningModel: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],
 });

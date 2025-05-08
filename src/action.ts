@@ -7,7 +7,7 @@ import type { ReasoningEffort } from './types';
 
 // Get inputs
 const issueNumber = core.getInput('issue-number', { required: true });
-const model = core.getInput('planning-model', { required: false });
+const planningModel = core.getInput('planning-model', { required: false });
 const detailedPlan = core.getInput('detailed-plan', { required: false }) !== 'false';
 const reasoningEffort = core.getInput('reasoning-effort', { required: false }) as ReasoningEffort | undefined;
 const dryRun = core.getInput('dry-run', { required: false }) === 'true';
@@ -25,7 +25,7 @@ fs.rmSync(path.join(os.homedir(), '.config', 'gh'), { force: true, recursive: tr
 
 void main({
   issueNumber: Number(issueNumber),
-  model,
+  planningModel: planningModel,
   dryRun,
   detailedPlan,
   reasoningEffort,
