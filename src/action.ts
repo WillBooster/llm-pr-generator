@@ -24,11 +24,11 @@ if (reasoningEffort && !['low', 'medium', 'high'].includes(reasoningEffort)) {
 fs.rmSync(path.join(os.homedir(), '.config', 'gh'), { force: true, recursive: true });
 
 void main({
+  aiderExtraArgs,
+  detailedPlan,
+  dryRun,
   issueNumber: Number(issueNumber),
   planningModel,
-  dryRun,
-  detailedPlan,
   reasoningEffort,
-  aiderExtraArgs,
   repomixExtraArgs,
 });
