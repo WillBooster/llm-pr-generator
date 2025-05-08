@@ -21,7 +21,7 @@ const argv = await yargs(hideBin(process.argv))
   })
   .option('detailed-plan', {
     alias: 'p',
-    description: 'Whether to generate a detailed plan for code changes (increasing in LLM cost)',
+    description: 'Whether to generate a detailed plan to write code (increases LLM cost but improves quality)',
     type: 'boolean',
     default: true,
   })
