@@ -1,7 +1,7 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
-import { planHowToResolveIssue } from './plan';
+import { planCodeChanges } from './plan';
 import type { GitHubIssue, ReasoningEffort } from './types';
 import { parseCommandLineArgs } from './utils';
 
@@ -14,12 +14,14 @@ import { runCommand } from './spawn';
 export interface MainOptions {
   /** Additional arguments to pass to the aider command */
   aiderExtraArgs?: string;
+  /** Whether to generate a detailed plan */
+  detailedPlan: boolean;
   /** Run without making actual changes (no branch creation, no PR) */
-  dryRun?: boolean;
+  dryRun: boolean;
   /** GitHub issue number to process */
   issueNumber: number;
-  /** LLM model to use for selecting files to be modified */
-  model?: string;
+  /** LLM model to use for planning code changes */
+  planningModel?: string;
   /** Level of reasoning effort for the LLM */
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
@@ -28,9 +30,15 @@ export interface MainOptions {
 
 const MAX_ANSWER_LENGTH = 60000;
 
-export async function main(options: MainOptions): Promise<void> {
-  const { issueNumber, model, reasoningEffort, aiderExtraArgs } = options;
-  const dryRun = options.dryRun ?? false;
+export async function main({
+  aiderExtraArgs,
+  detailedPlan,
+  dryRun,
+  issueNumber,
+  planningModel,
+  reasoningEffort,
+  repomixExtraArgs,
+}: MainOptions): Promise<void> {
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
   }
@@ -64,7 +72,7 @@ export async function main(options: MainOptions): Promise<void> {
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    model && (await planHowToResolveIssue(model, issueText, reasoningEffort, options.repomixExtraArgs));
+    planningModel && (await planCodeChanges(planningModel, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `
