@@ -3,7 +3,12 @@ import type { SpawnSyncReturns } from 'node:child_process';
 import { spawn } from 'node:child_process';
 import ansis from 'ansis';
 
-export async function runCommand(command: string, args: string[], options?: SpawnOptionsWithoutStdio): Promise<string> {
+export async function runCommand(
+  command: string,
+  args: string[],
+  options?: SpawnOptionsWithoutStdio,
+  ignoreExitStatus = false
+): Promise<string> {
   console.info(ansis.green(`$ ${command} ${args}`));
   console.info('stdout: ---------------------');
   const ret = await spawnAsync(command, args, options);
@@ -11,7 +16,7 @@ export async function runCommand(command: string, args: string[], options?: Spaw
   console.info(ansis.yellow(ret.stderr.trim()));
   console.info('-----------------------------');
   console.info(ansis.magenta(`Exit code: ${ret.status}\n`));
-  if (ret.status !== 0 && ret.status !== null) {
+  if (!ignoreExitStatus && ret.status !== 0 && ret.status !== null) {
     process.exit(ret.status);
   }
   return ret.stdout;

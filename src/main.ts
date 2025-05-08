@@ -43,7 +43,7 @@ export async function main({
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
   }
   await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
-  await runCommand('uv', ['tool', 'uninstall', 'aider-chat']);
+  await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], undefined, true);
   await runCommand('aider-install', []);
   await runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
 
