@@ -46,6 +46,7 @@ export async function main({
   await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], undefined, true);
   await runCommand('aider-install', []);
   await runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
+  // await runCommand('aider', ['--install-main-branch', '--yes-always']);
 
   const issueResult = await runCommand('gh', [
     'issue',

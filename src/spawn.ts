@@ -12,8 +12,11 @@ export async function runCommand(
   console.info(ansis.green(`$ ${command} ${args}`));
   console.info('stdout: ---------------------');
   const ret = await spawnAsync(command, args, options);
-  console.info('stderr: ---------------------');
-  console.info(ansis.yellow(ret.stderr.trim()));
+  const stderr = ret.stderr.trim();
+  if (stderr) {
+    console.info('stderr: ---------------------');
+    console.info(ansis.yellow(stderr));
+  }
   console.info('-----------------------------');
   console.info(ansis.magenta(`Exit code: ${ret.status}\n`));
   if (!ignoreExitStatus && ret.status !== 0 && ret.status !== null) {

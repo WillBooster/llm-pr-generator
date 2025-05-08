@@ -70,6 +70,8 @@ ${planFormat}# File Paths to be Modified
 
 Ensure that the file paths are exactly as provided in the input.
 `.trim();
+
+  console.info(`Generating plan with ${model} (reasoning effort: ${reasoningEffort}) ...`);
   const response = await callLlmApi(
     url,
     apiKey,
@@ -86,6 +88,7 @@ Ensure that the file paths are exactly as provided in the input.
     ],
     reasoningEffort
   );
+  console.info('Planning complete!');
 
   const planHeader = '# Plan to Resolve the Issue';
   const filesHeader = '# File Paths to be Modified';
@@ -100,13 +103,13 @@ Ensure that the file paths are exactly as provided in the input.
     const planContentStartIndex = planHeaderIndex + planHeader.length;
     // Determine the end of the plan content. It's either the start of the files header or end of the response.
     const planContentEndIndex = filesHeaderIndex !== -1 ? filesHeaderIndex : response.length;
-    plan = response.substring(planContentStartIndex, planContentEndIndex).trim();
+    plan = response.slice(planContentStartIndex, planContentEndIndex).trim();
   }
 
   if (filesHeaderIndex !== -1) {
     const filesContentStartIndex = filesHeaderIndex + filesHeader.length;
     // The files section goes from after its header to the end of the response.
-    const filesSectionText = response.substring(filesContentStartIndex).trim();
+    const filesSectionText = response.slice(filesContentStartIndex).trim();
 
     const filePathRegex = /\B-\s*`?([^`\n]+)`?/g;
     const matches = [...filesSectionText.matchAll(filePathRegex)];
