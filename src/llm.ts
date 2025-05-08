@@ -14,7 +14,8 @@ export function getApiUrlAndKey(model: string): { url: string; apiKey: string } 
     url = 'https://api.openai.com/v1/chat/completions';
     apiKey = process.env.OPENAI_API_KEY || '';
   } else {
-    throw new Error(`Unknown model: ${model}`);
+    console.error(`Unknown model: ${model}`);
+    process.exit(1);
   }
   return { url, apiKey };
 }
@@ -27,7 +28,8 @@ export async function callLlmApi(
   reasoningEffort?: ReasoningEffort
 ): Promise<string> {
   if (!apiKey) {
-    throw new Error('API key is not set.');
+    console.error(`API key for ${model} is not set.`);
+    process.exit(1);
   }
 
   const requestBody: Record<string, unknown> = {
@@ -49,7 +51,8 @@ export async function callLlmApi(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`LLM API error: ${response.statusText} (${response.status}): ${errorText}`);
+    console.error(`LLM API error: ${response.statusText} (${response.status}): ${errorText}`);
+    process.exit(1);
   }
 
   const result = await response.json();

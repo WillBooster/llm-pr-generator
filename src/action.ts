@@ -15,9 +15,10 @@ const aiderExtraArgs = core.getInput('aider-extra-args', { required: false });
 const repomixExtraArgs = core.getInput('repomix-extra-args', { required: false });
 
 if (reasoningEffort && !['low', 'medium', 'high'].includes(reasoningEffort)) {
-  throw new Error(
+  console.error(
     `Invalid reasoning-effort value: ${reasoningEffort}. Using default. Valid values are: low, medium, high`
   );
+  process.exit(1);
 }
 
 // cf. https://github.com/cli/cli/issues/8441#issuecomment-1870271857
