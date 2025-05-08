@@ -25,7 +25,7 @@ fs.rmSync(path.join(os.homedir(), '.config', 'gh'), { force: true, recursive: tr
 
 void main({
   issueNumber: Number(issueNumber),
-  planningModel: planningModel,
+  planningModel,
   dryRun,
   detailedPlan,
   reasoningEffort,
