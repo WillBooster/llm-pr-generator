@@ -10,7 +10,7 @@ const issueNumber = core.getInput('issue-number', { required: true });
 const model = core.getInput('model', { required: false });
 const reasoningEffort = core.getInput('reasoning-effort', { required: false }) as ReasoningEffort | undefined;
 const dryRun = core.getInput('dry-run', { required: false }) === 'true';
-const enablePlanning = core.getInput('planning', { required: false }) === 'true';
+const enablePlanning = core.getInput('planning', { required: false }) !== 'false';
 const aiderExtraArgs = core.getInput('aider-extra-args', { required: false });
 const repomixExtraArgs = core.getInput('repomix-extra-args', { required: false });
 
