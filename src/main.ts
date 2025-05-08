@@ -17,7 +17,7 @@ export interface MainOptions {
   /** Run without making actual changes (no branch creation, no PR) */
   dryRun: boolean;
   /** Whether to generate a detailed plan */
-  enablePlanning: boolean;
+  detailedPlan: boolean;
   /** GitHub issue number to process */
   issueNumber: number;
   /** LLM model to use for planning code changes */
@@ -33,7 +33,7 @@ const MAX_ANSWER_LENGTH = 60000;
 export async function main({
   aiderExtraArgs,
   dryRun,
-  enablePlanning,
+  detailedPlan,
   issueNumber,
   model,
   reasoningEffort,
@@ -72,7 +72,7 @@ export async function main({
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    model && (await planCodeChanges(model, issueText, enablePlanning, reasoningEffort, repomixExtraArgs));
+    model && (await planCodeChanges(model, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `

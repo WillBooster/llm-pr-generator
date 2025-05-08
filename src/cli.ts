@@ -66,7 +66,7 @@ if (argv['working-dir']) {
 await main({
   aiderExtraArgs: argv['aider-extra-args'],
   dryRun: argv['dry-run'],
-  enablePlanning: argv['detailed-plan'],
+  detailedPlan: argv['detailed-plan'],
   issueNumber: argv['issue-number'],
   model: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
