@@ -18,7 +18,6 @@ const argv = await yargs(hideBin(process.argv))
     alias: 'm',
     description: 'LLM (OpenAI or Gemini) for planning code changes',
     type: 'string',
-    demandOption: true,
   })
   .option('detailed-plan', {
     alias: 'p',
