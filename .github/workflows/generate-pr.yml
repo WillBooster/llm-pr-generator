@@ -13,8 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generate PR with AI
-        uses: ./ # This references the action in the current repository
+        uses: WillBooster/generate-pr-with-llm@v1
         with:
+          # required options
           issue-number: ${{ github.event.issue.number }}
         env:
           # for Amazon (Bedrock)

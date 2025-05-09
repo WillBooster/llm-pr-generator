@@ -5,6 +5,10 @@
 
 A GitHub Action that automatically generates pull requests using AI (LLM).
 
+## Usage
+
+See main/.github/workflows/generate-pr.yml
+
 ## License
 
 Apache License 2.0
