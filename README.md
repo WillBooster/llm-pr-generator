@@ -7,7 +7,7 @@ A GitHub Action that automatically generates pull requests using AI (LLM).
 
 ## Usage
 
-See main/.github/workflows/generate-pr.yml
+See [action.yml](action.yml) and [.github/workflows/generate-pr.yml](.github/workflows/generate-pr.yml).
 
 ## License
 
