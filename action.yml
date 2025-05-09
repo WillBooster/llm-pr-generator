@@ -1,5 +1,5 @@
-name: 'Generate PR with LLM'
-description: 'A GitHub Action that generates pull requests using LLMs.'
+name: 'Generate PR with AI'
+description: 'A GitHub Action that generates pull requests using AI (LLM).'
 author: 'WillBooster Inc.'
 
 # Define the inputs for your action
@@ -8,7 +8,7 @@ inputs:
     description: 'The issue (or PR) number to reference when generating the PR'
     required: true
   planning-model:
-    description: 'LLM model to use for planning code changes'
+    description: 'LLM to use for planning code changes'
     required: false
   detailed-plan:
     description: 'Whether to generate a detailed plan to write code (increases LLM cost but improves quality)'

@@ -57,8 +57,8 @@ export async function main({
   ]);
   const issue: GitHubIssue = JSON.parse(issueResult);
 
-  // if (!issue.labels.some((label) => label.name.includes('llm-pr'))) {
-  //   console.warn(ansis.yellow(`Issue #${issueNumber} is missing the required 'llm-pr' label. Processing skipped.`));
+  // if (!issue.labels.some((label) => label.name.includes('ai-pr'))) {
+  //   console.warn(ansis.yellow(`Issue #${issueNumber} is missing the required 'ai-pr' label. Processing skipped.`));
   //   process.exit(0);
   // }
 
@@ -94,7 +94,7 @@ ${planText}
 
   const now = new Date();
 
-  const branchName = `llm-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
+  const branchName = `ai-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
   if (!dryRun) {
     await runCommand('git', ['switch', '-C', branchName]);
   } else {
