@@ -102,7 +102,13 @@ ${planText}
   }
 
   // Build aider command arguments
-  const aiderArgs = ['--yes-always', '--no-gitignore', '--no-show-model-warnings', '--no-stream'];
+  const aiderArgs = [
+    '--yes-always',
+    '--no-check-update',
+    '--no-gitignore',
+    '--no-show-model-warnings',
+    '--no-show-release-notes',
+  ];
   aiderArgs.push(...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS));
   if (dryRun) {
     aiderArgs.push('--dry-run');
@@ -116,8 +122,10 @@ ${planText}
   });
   const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
 
+  // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
+  await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], undefined, true);
   if (!dryRun) {
-    await runCommand('git', ['push', 'origin', branchName]);
+    await runCommand('git', ['push', 'origin', branchName, '--no-verify']);
   } else {
     console.info(ansis.yellow(`Would push branch: ${branchName} to origin`));
   }
