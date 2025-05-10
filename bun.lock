@@ -6,19 +6,19 @@
       "devDependencies": {
         "@actions/core": "1.11.1",
         "@biomejs/biome": "1.9.4",
-        "@types/bun": "1.2.11",
+        "@types/bun": "1.2.12",
         "@types/micromatch": "4.0.9",
         "@types/yargs": "17.0.33",
         "@willbooster/biome-config": "2.1.0",
         "@willbooster/prettier-config": "10.0.0",
-        "@willbooster/wb": "8.1.1",
+        "@willbooster/wb": "8.1.2",
         "ansis": "3.17.0",
         "build-ts": "13.2.3",
         "conventional-changelog-conventionalcommits": "8.0.0",
         "lefthook": "1.11.12",
         "prettier": "3.5.3",
         "semantic-release": "24.2.3",
-        "sort-package-json": "3.1.0",
+        "sort-package-json": "3.2.1",
         "typescript": "5.8.3",
         "undici": "7.8.0",
         "yaml": "2.7.1",
@@ -431,7 +431,7 @@
 
     "@types/braces": ["@types/braces@3.0.5", "", {}, "sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w=="],
 
-    "@types/bun": ["@types/bun@1.2.11", "", { "dependencies": { "bun-types": "1.2.11" } }, "sha512-ZLbbI91EmmGwlWTRWuV6J19IUiUC5YQ3TCEuSHI3usIP75kuoA8/0PVF+LTrbEnVc8JIhpElWOxv1ocI1fJBbw=="],
+    "@types/bun": ["@types/bun@1.2.12", "", { "dependencies": { "bun-types": "1.2.12" } }, "sha512-lY/GQTXDGsolT/TiH72p1tuyUORuRrdV7VwOTOjDOt8uTBJQOJc5zz3ufwwDl0VBaoxotSk4LdP0hhjLJ6ypIQ=="],
 
     "@types/estree": ["@types/estree@1.0.7", "", {}, "sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ=="],
 
@@ -461,7 +461,7 @@
 
     "@willbooster/shared-lib-node": ["@willbooster/shared-lib-node@6.1.17", "", { "dependencies": { "dotenv": "16.5.0", "tree-kill": "1.2.2" } }, "sha512-eolXgwgl94hYBCtDwdxUJ0QS6wgltpPvfFsOdqlDOo5CO0YG9Pk4xZ3mGnYmVyGBx6Wfv/vgjTKHss2QejrCOw=="],
 
-    "@willbooster/wb": ["@willbooster/wb@8.1.1", "", { "dependencies": { "chalk": "5.4.1", "dotenv": "16.5.0", "globby": "14.1.0", "kill-port": "2.0.1", "minimal-promise-pool": "4.1.2", "tree-kill": "1.2.2", "yargs": "17.7.2" }, "bin": { "wb": "bin/index.js" } }, "sha512-GFjxyMHFrT1lB3LRUXBGQCup7x2Cuo1igVnht5bFHF5uXFnGhi9l/LcG4e5bQyKJ/RUQO7DTwAMjbszWB3hVTg=="],
+    "@willbooster/wb": ["@willbooster/wb@8.1.2", "", { "dependencies": { "chalk": "5.4.1", "dotenv": "16.5.0", "globby": "14.1.0", "kill-port": "2.0.1", "minimal-promise-pool": "4.1.2", "tree-kill": "1.2.2", "yargs": "17.7.2" }, "bin": { "wb": "bin/index.js" } }, "sha512-H0fDy1UJvyjXKv9Olp7H3WAJnneTeY/HtT0fJFPWNTtW60qclkxGoPv0jwhFC9OwwOOi3q+HhEsSVieMl2GnKg=="],
 
     "acorn": ["acorn@8.14.1", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg=="],
 
@@ -509,7 +509,7 @@
 
     "build-ts": ["build-ts@13.2.3", "", { "dependencies": { "@babel/core": "7.27.1", "@babel/plugin-proposal-decorators": "7.27.1", "@babel/plugin-proposal-explicit-resource-management": "7.27.1", "@babel/plugin-syntax-import-attributes": "7.27.1", "@babel/plugin-transform-runtime": "7.27.1", "@babel/preset-env": "7.27.1", "@babel/preset-react": "7.27.1", "@babel/preset-typescript": "7.27.1", "@rollup/plugin-babel": "6.0.4", "@rollup/plugin-commonjs": "28.0.3", "@rollup/plugin-json": "6.1.0", "@rollup/plugin-node-resolve": "16.0.1", "@rollup/plugin-replace": "6.0.2", "@rollup/plugin-terser": "0.4.4", "@rollup/pluginutils": "5.1.4", "@willbooster/shared-lib-node": "6.1.17", "babel-plugin-polyfill-corejs3": "0.12.0", "babel-plugin-transform-remove-console": "6.9.4", "chalk": "5.4.1", "core-js": "3.42.0", "core-js-pure": "3.42.0", "date-time": "4.0.0", "pretty-ms": "9.2.0", "rollup": "4.40.1", "rollup-plugin-analyzer": "4.0.0", "rollup-plugin-keep-import": "1.0.3", "rollup-plugin-node-externals": "8.0.0", "rollup-plugin-preserve-directives": "0.4.0", "rollup-plugin-string": "3.0.0", "rollup-plugin-ts": "3.4.5", "signal-exit": "4.1.0", "tsx": "4.19.4", "typescript": "5.8.3", "yargs": "17.7.2" }, "bin": { "build-ts": "bin/index.js" } }, "sha512-zcNUQjFiQMEoQQ0LT6Y5IZOr/t16VR49XbvUyIbPHmYmLSj47uIbzdqgj4z5LoehnKjmGDNDOAjcX5SyvWBjpg=="],
 
-    "bun-types": ["bun-types@1.2.11", "", { "dependencies": { "@types/node": "*" } }, "sha512-dbkp5Lo8HDrXkLrONm6bk+yiiYQSntvFUzQp0v3pzTAsXk6FtgVMjdQ+lzFNVAmQFUkPQZ3WMZqH5tTo+Dp/IA=="],
+    "bun-types": ["bun-types@1.2.12", "", { "dependencies": { "@types/node": "*" } }, "sha512-tvWMx5vPqbRXgE8WUZI94iS1xAYs8bkqESR9cxBB1Wi+urvfTrF1uzuDgBHFAdO0+d2lmsbG3HmeKMvUyj6pWA=="],
 
     "callsites": ["callsites@3.1.0", "", {}, "sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ=="],
 
@@ -981,7 +981,7 @@
 
     "sort-object-keys": ["sort-object-keys@1.1.3", "", {}, "sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg=="],
 
-    "sort-package-json": ["sort-package-json@3.1.0", "", { "dependencies": { "detect-indent": "^7.0.1", "detect-newline": "^4.0.1", "git-hooks-list": "^4.0.0", "is-plain-obj": "^4.1.0", "semver": "^7.7.1", "sort-object-keys": "^1.1.3", "tinyglobby": "^0.2.12" }, "bin": { "sort-package-json": "cli.js" } }, "sha512-PxeCIzE+s88Qj6IXkn1SX9aPJSNkLP7epn6xj0J3Pq12SIM5+XMSaC7iLrszTDYaNfxdqZvI1z6W6LHyd1G4Hw=="],
+    "sort-package-json": ["sort-package-json@3.2.1", "", { "dependencies": { "detect-indent": "^7.0.1", "detect-newline": "^4.0.1", "git-hooks-list": "^4.0.0", "is-plain-obj": "^4.1.0", "semver": "^7.7.1", "sort-object-keys": "^1.1.3", "tinyglobby": "^0.2.12" }, "bin": { "sort-package-json": "cli.js" } }, "sha512-rTfRdb20vuoAn7LDlEtCqOkYfl2X+Qze6cLbNOzcDpbmKEhJI30tTN44d5shbKJnXsvz24QQhlCm81Bag7EOKg=="],
 
     "source-map": ["source-map@0.6.1", "", {}, "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="],
 
