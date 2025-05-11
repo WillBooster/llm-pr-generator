@@ -49,7 +49,7 @@ export async function planCodeChanges(
 Review the following GitHub issue and the following list of available file paths and their contents.
 Based on this information, please perform the following tasks:
 
-- Create a step-by-step plan outlining how to address the GitHub issue. The plan should be detailed enough to guide a developer.
+- Create a step-by-step plan outlining how to address the GitHub issue. The plan must focus on writing code excluding tests.
 ${planningTask}
 
 GitHub Issue:
