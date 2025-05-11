@@ -5,8 +5,14 @@
   "repository": "github:WillBooster/generate-pr-with-ai",
   "license": "Apache-2.0",
   "author": "WillBooster Inc.",
+  "type": "module",
+  "bin": "bin/cli.js",
+  "files": [
+    "bin/index.js",
+    "dist/"
+  ],
   "scripts": {
-    "build": "build-ts app --input src/action.ts --bundleBuiltins undici --no-auto-cascade-env",
+    "build": "build-ts app --input src/action.ts --input src/cli.ts --bundleBuiltins undici",
     "check-all": "bun run cleanup && bun run typecheck && bun run test",
     "cleanup": "bun --bun wb lint --fix --format",
     "format": "bun --bun wb lint --format",
