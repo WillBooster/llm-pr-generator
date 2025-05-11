@@ -19,7 +19,7 @@
     "lint": "bun --bun wb lint",
     "lint-fix": "bun --bun wb lint --fix",
     "prepare": "lefthook install || true",
-    "release-v1": "git tag -f v1 main && git push origin v1 --force",
+    "release": "bun semantic-release && git tag -f v1 main && git push origin v1 --force",
     "start": "bun --env-file=.env src/cli.ts",
     "test": "bun wb test",
     "typecheck": "bun --bun wb typecheck"
