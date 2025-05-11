@@ -28,7 +28,7 @@ export interface MainOptions {
   repomixExtraArgs?: string;
 }
 
-const MAX_ANSWER_LENGTH = 60000;
+const MAX_ANSWER_LENGTH = 65000;
 
 export async function main({
   aiderExtraArgs,
@@ -120,7 +120,7 @@ ${planText}
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, FORCE_COLOR: '' },
   });
-  const aiderAnswer = aiderResult.split(/─+/).at(-1)?.trim() ?? '';
+  const aiderAnswer = aiderResult.trim();
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
   await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], undefined, true);
@@ -132,11 +132,17 @@ ${planText}
 
   // Create a PR using GitHub CLI
   const prTitle = getHeaderOfFirstCommit();
-  const prBody = `Closes #${issueNumber}
+  let prBody = `Closes #${issueNumber}
+
+${planText}
+`;
+  prBody += `
+# Aider Log
 
 \`\`\`\`
-${aiderAnswer.slice(0, MAX_ANSWER_LENGTH)}
+${aiderAnswer.slice(0, MAX_ANSWER_LENGTH - prBody.length)}
 \`\`\`\``;
+  prBody = prBody.replaceAll(/(?:\s*\n){2,}/g, '\n\n').trim();
   if (!dryRun) {
     const repoName = getGitRepoName();
     await runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repoName]);
