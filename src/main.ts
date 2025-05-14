@@ -6,6 +6,7 @@ import type { GitHubIssue, ReasoningEffort } from './types';
 import { parseCommandLineArgs, stripHtmlComments } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
+import { configureGitUserDetailsIfNeeded } from './profile';
 import { runCommand } from './spawn';
 
 /**
@@ -26,88 +27,6 @@ export interface MainOptions {
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
   repomixExtraArgs?: string;
-}
-
-async function configureGitUserDetailsIfNeeded(): Promise<void> {
-  // Configure user.name
-  let gitUserName = '';
-  try {
-    gitUserName = (await runCommand('git', ['config', 'user.name'], undefined, true)).trim();
-  } catch (error: unknown) {
-    console.warn(
-      ansis.yellow(
-        `Failed to run 'git config user.name': ${error instanceof Error ? error.message : String(error)}. Is git installed? Skipping git user configuration.`
-      )
-    );
-    return; // Exit if git command fails
-  }
-
-  if (!gitUserName) {
-    console.log(ansis.dim('Git user.name not set. Attempting to configure from GitHub profile...'));
-    try {
-      const githubNameOutput = (await runCommand('gh', ['api', 'user', '--jq', '.name'], undefined, true)).trim();
-      if (githubNameOutput && githubNameOutput !== 'null') {
-        const nameToSet = githubNameOutput.replace(/^"|"$/g, ''); // Remove potential surrounding quotes
-        await runCommand('git', ['config', 'user.name', nameToSet]);
-        console.log(ansis.green(`Successfully configured git user.name to "${nameToSet}"`));
-      } else {
-        console.warn(
-          ansis.yellow(
-            'Could not retrieve user name from GitHub profile (it might be "null" or not set). Please configure it manually: git config user.name "Your Name"'
-          )
-        );
-      }
-    } catch (ghError: unknown) {
-      console.warn(
-        ansis.yellow(
-          `Failed to execute 'gh' command to fetch user name: ${ghError instanceof Error ? ghError.message : String(ghError)}. Is GitHub CLI installed and authenticated?`
-        )
-      );
-      console.warn(ansis.yellow('Please configure git user.name manually: git config user.name "Your Name"'));
-    }
-  } else {
-    console.log(ansis.dim(`Git user.name already set to "${gitUserName}".`));
-  }
-
-  // Configure user.email
-  let gitUserEmail = '';
-  try {
-    gitUserEmail = (await runCommand('git', ['config', 'user.email'], undefined, true)).trim();
-  } catch (error: unknown) {
-    console.warn(
-      ansis.yellow(
-        `Failed to run 'git config user.email': ${error instanceof Error ? error.message : String(error)}. Is git installed? Skipping git user email configuration.`
-      )
-    );
-    return; // Exit if git command fails
-  }
-
-  if (!gitUserEmail) {
-    console.log(ansis.dim('Git user.email not set. Attempting to configure from GitHub profile...'));
-    try {
-      const githubEmailOutput = (await runCommand('gh', ['api', 'user', '--jq', '.email'], undefined, true)).trim();
-      if (githubEmailOutput && githubEmailOutput !== 'null') {
-        const emailToSet = githubEmailOutput.replace(/^"|"$/g, ''); // Remove potential surrounding quotes
-        await runCommand('git', ['config', 'user.email', emailToSet]);
-        console.log(ansis.green(`Successfully configured git user.email to "${emailToSet}"`));
-      } else {
-        console.warn(
-          ansis.yellow(
-            'Could not retrieve user email from GitHub profile (it might be "null", private, or not set). Please configure it manually: git config user.email "you@example.com"'
-          )
-        );
-      }
-    } catch (ghError: unknown) {
-      console.warn(
-        ansis.yellow(
-          `Failed to execute 'gh' command to fetch user email: ${ghError instanceof Error ? ghError.message : String(ghError)}. Is GitHub CLI installed and authenticated?`
-        )
-      );
-      console.warn(ansis.yellow('Please configure git user.email manually: git config user.email "you@example.com"'));
-    }
-  } else {
-    console.log(ansis.dim(`Git user.email already set to "${gitUserEmail}".`));
-  }
 }
 
 const MAX_ANSWER_LENGTH = 65000;
