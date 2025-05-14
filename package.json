@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "build-ts app --input src/action.ts --input src/cli.ts --bundleBuiltins undici",
-    "check-for-ai": "bun install > /dev/null && bun run cleanup && bun run typecheck && bun run test",
+    "check-for-ai": "bun install && bun run cleanup && bun run typecheck && bun run build && bun run test",
     "cleanup": "bun --bun wb lint --fix --format",
     "format": "bun --bun wb lint --format",
     "lint": "bun --bun wb lint",
