@@ -86,8 +86,8 @@ export async function main({
       } catch (diffError) {
         console.warn(
           ansis.yellow(
-            `Failed to fetch diff for PR #${issueNumber}: ${diffError instanceof Error ? diffError.message : String(diffError)}`,
-          ),
+            `Failed to fetch diff for PR #${issueNumber}: ${diffError instanceof Error ? diffError.message : String(diffError)}`
+          )
         );
         // prDiff remains ''
       }
@@ -96,8 +96,8 @@ export async function main({
       // Log this information and proceed as if it's a regular issue.
       console.info(
         ansis.blue(
-          `Issue #${issueNumber} is not a Pull Request, or an error occurred while checking. Proceeding as a regular issue. Error: ${prCheckError instanceof Error ? prCheckError.message : String(prCheckError)}`,
-        ),
+          `Issue #${issueNumber} is not a Pull Request, or an error occurred while checking. Proceeding as a regular issue. Error: ${prCheckError instanceof Error ? prCheckError.message : String(prCheckError)}`
+        )
       );
       // prDiff remains ''
     }
