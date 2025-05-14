@@ -3,7 +3,7 @@ import ansis from 'ansis';
 import YAML from 'yaml';
 import { planCodeChanges } from './plan';
 import type { GitHubIssue, ReasoningEffort } from './types';
-import { parseCommandLineArgs } from './utils';
+import { parseCommandLineArgs, stripHtmlComments } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { runCommand } from './spawn';
@@ -62,10 +62,11 @@ export async function main({
   //   process.exit(0);
   // }
 
+  const cleanedIssueBody = stripHtmlComments(issue.body);
   const issueObject = {
     author: issue.author.login,
     title: issue.title,
-    description: issue.body,
+    description: cleanedIssueBody,
     comments: issue.comments.map((c) => ({
       author: c.author.login,
       body: c.body,
