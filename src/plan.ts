@@ -72,6 +72,11 @@ Ensure that the file paths are exactly as provided in the input.
 `.trim();
 
   console.info(`Generating plan with ${model} (reasoning effort: ${reasoningEffort}) ...`);
+  console.info('System prompt: -------------------');
+  console.info(prompt);
+  console.info('User prompt: ---------------------');
+  console.info(context);
+  console.info('----------------------------------');
   const response = await callLlmApi(
     url,
     apiKey,
