@@ -25,9 +25,7 @@ export async function configureGitUserDetailsIfNeeded(): Promise<void> {
       console.log(ansis.green(`Successfully configured git user.email to "${emailToSet}"`));
     } else {
       console.warn(
-        ansis.yellow(
-          'Could not retrieve user email from GitHub profile (it might be "null", private, or not set). Please configure it manually: git config user.email "you@example.com"'
-        )
+        ansis.yellow('Could not retrieve user email from GitHub profile (it might be "null", private, or not set).')
       );
     }
   }
