@@ -33,10 +33,10 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
   let gitUserName = '';
   try {
     gitUserName = (await runCommand('git', ['config', 'user.name'], undefined, true)).trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.warn(
       ansis.yellow(
-        `Failed to run 'git config user.name': ${error.message}. Is git installed? Skipping git user configuration.`
+        `Failed to run 'git config user.name': ${error instanceof Error ? error.message : String(error)}. Is git installed? Skipping git user configuration.`
       )
     );
     return; // Exit if git command fails
@@ -57,10 +57,10 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
           )
         );
       }
-    } catch (ghError: any) {
+    } catch (ghError: unknown) {
       console.warn(
         ansis.yellow(
-          `Failed to execute 'gh' command to fetch user name: ${ghError.message}. Is GitHub CLI installed and authenticated?`
+          `Failed to execute 'gh' command to fetch user name: ${ghError instanceof Error ? ghError.message : String(ghError)}. Is GitHub CLI installed and authenticated?`
         )
       );
       console.warn(ansis.yellow('Please configure git user.name manually: git config user.name "Your Name"'));
@@ -73,10 +73,10 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
   let gitUserEmail = '';
   try {
     gitUserEmail = (await runCommand('git', ['config', 'user.email'], undefined, true)).trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.warn(
       ansis.yellow(
-        `Failed to run 'git config user.email': ${error.message}. Is git installed? Skipping git user email configuration.`
+        `Failed to run 'git config user.email': ${error instanceof Error ? error.message : String(error)}. Is git installed? Skipping git user email configuration.`
       )
     );
     return; // Exit if git command fails
@@ -97,10 +97,10 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
           )
         );
       }
-    } catch (ghError: any) {
+    } catch (ghError: unknown) {
       console.warn(
         ansis.yellow(
-          `Failed to execute 'gh' command to fetch user email: ${ghError.message}. Is GitHub CLI installed and authenticated?`
+          `Failed to execute 'gh' command to fetch user email: ${ghError instanceof Error ? ghError.message : String(ghError)}. Is GitHub CLI installed and authenticated?`
         )
       );
       console.warn(ansis.yellow('Please configure git user.email manually: git config user.email "you@example.com"'));
