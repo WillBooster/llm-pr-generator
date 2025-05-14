@@ -6,6 +6,7 @@ import type { GitHubIssue, ReasoningEffort } from './types';
 import { parseCommandLineArgs, stripHtmlComments } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
+import { configureGitUserDetailsIfNeeded } from './profile';
 import { runCommand } from './spawn';
 
 /**
@@ -41,7 +42,10 @@ export async function main({
 }: MainOptions): Promise<void> {
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
+  } else {
+    await configureGitUserDetailsIfNeeded();
   }
+
   await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
   await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], undefined, true);
   await runCommand('aider-install', []);
