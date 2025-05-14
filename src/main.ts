@@ -62,6 +62,49 @@ export async function main({
   //   process.exit(0);
   // }
 
+  let prDiff = '';
+  const repoName = getGitRepoName();
+
+  if (repoName) {
+    try {
+      // Check if the issue number is a PR by trying to view it.
+      // We use stdio: [null, null, null] to ignore stdio streams as we only care about success/failure, not the output.
+      await runCommand('gh', ['pr', 'view', issueNumber.toString(), '--repo', repoName, '--json', 'number'], {
+        stdio: [null, null, null],
+      });
+      console.info(ansis.green(`Issue #${issueNumber} is a Pull Request. Attempting to fetch its diff.`));
+
+      try {
+        const diffOutput = await runCommand('gh', ['pr', 'diff', issueNumber.toString(), '--repo', repoName]);
+        if (diffOutput.trim()) {
+          prDiff = diffOutput.trim();
+          console.info(ansis.green(`Successfully fetched diff for PR #${issueNumber}.`));
+        } else {
+          console.info(ansis.yellow(`PR #${issueNumber} has no diff content.`));
+          // prDiff remains ''
+        }
+      } catch (diffError) {
+        console.warn(
+          ansis.yellow(
+            `Failed to fetch diff for PR #${issueNumber}: ${diffError instanceof Error ? diffError.message : String(diffError)}`
+          )
+        );
+        // prDiff remains ''
+      }
+    } catch (prCheckError) {
+      // Not a PR or 'gh pr view' failed (e.g., PR not found, network issue, etc.)
+      // Log this information and proceed as if it's a regular issue.
+      console.info(
+        ansis.blue(
+          `Issue #${issueNumber} is not a Pull Request, or an error occurred while checking. Proceeding as a regular issue. Error: ${prCheckError instanceof Error ? prCheckError.message : String(prCheckError)}`
+        )
+      );
+      // prDiff remains ''
+    }
+  } else {
+    console.warn(ansis.yellow('Could not determine repository name. Skipping PR diff check.'));
+  }
+
   const issueObject = {
     author: issue.author.login,
     title: issue.title,
@@ -71,7 +114,13 @@ export async function main({
       body: c.body,
     })),
   };
-  const issueText = YAML.stringify(issueObject).trim();
+  let issueText = YAML.stringify(issueObject).trim();
+
+  if (prDiff) {
+    issueText += `\n\n--- START OF CODE CHANGES (DIFF) ---\n${prDiff}\n--- END OF CODE CHANGES (DIFF) ---`;
+    console.info(ansis.green('Appended PR diff to the content for LLM and Aider.'));
+  }
+
   const resolutionPlan =
     planningModel && (await planCodeChanges(planningModel, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
   const planText =
