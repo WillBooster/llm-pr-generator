@@ -34,7 +34,11 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
   try {
     gitUserName = (await runCommand('git', ['config', 'user.name'], undefined, true)).trim();
   } catch (error: any) {
-    console.warn(ansis.yellow(`Failed to run 'git config user.name': ${error.message}. Is git installed? Skipping git user configuration.`));
+    console.warn(
+      ansis.yellow(
+        `Failed to run 'git config user.name': ${error.message}. Is git installed? Skipping git user configuration.`
+      )
+    );
     return; // Exit if git command fails
   }
 
@@ -47,10 +51,18 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
         await runCommand('git', ['config', 'user.name', nameToSet]);
         console.log(ansis.green(`Successfully configured git user.name to "${nameToSet}"`));
       } else {
-        console.warn(ansis.yellow('Could not retrieve user name from GitHub profile (it might be "null" or not set). Please configure it manually: git config user.name "Your Name"'));
+        console.warn(
+          ansis.yellow(
+            'Could not retrieve user name from GitHub profile (it might be "null" or not set). Please configure it manually: git config user.name "Your Name"'
+          )
+        );
       }
     } catch (ghError: any) {
-      console.warn(ansis.yellow(`Failed to execute 'gh' command to fetch user name: ${ghError.message}. Is GitHub CLI installed and authenticated?`));
+      console.warn(
+        ansis.yellow(
+          `Failed to execute 'gh' command to fetch user name: ${ghError.message}. Is GitHub CLI installed and authenticated?`
+        )
+      );
       console.warn(ansis.yellow('Please configure git user.name manually: git config user.name "Your Name"'));
     }
   } else {
@@ -62,7 +74,11 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
   try {
     gitUserEmail = (await runCommand('git', ['config', 'user.email'], undefined, true)).trim();
   } catch (error: any) {
-    console.warn(ansis.yellow(`Failed to run 'git config user.email': ${error.message}. Is git installed? Skipping git user email configuration.`));
+    console.warn(
+      ansis.yellow(
+        `Failed to run 'git config user.email': ${error.message}. Is git installed? Skipping git user email configuration.`
+      )
+    );
     return; // Exit if git command fails
   }
 
@@ -75,10 +91,18 @@ async function configureGitUserDetailsIfNeeded(): Promise<void> {
         await runCommand('git', ['config', 'user.email', emailToSet]);
         console.log(ansis.green(`Successfully configured git user.email to "${emailToSet}"`));
       } else {
-        console.warn(ansis.yellow('Could not retrieve user email from GitHub profile (it might be "null", private, or not set). Please configure it manually: git config user.email "you@example.com"'));
+        console.warn(
+          ansis.yellow(
+            'Could not retrieve user email from GitHub profile (it might be "null", private, or not set). Please configure it manually: git config user.email "you@example.com"'
+          )
+        );
       }
     } catch (ghError: any) {
-      console.warn(ansis.yellow(`Failed to execute 'gh' command to fetch user email: ${ghError.message}. Is GitHub CLI installed and authenticated?`));
+      console.warn(
+        ansis.yellow(
+          `Failed to execute 'gh' command to fetch user email: ${ghError.message}. Is GitHub CLI installed and authenticated?`
+        )
+      );
       console.warn(ansis.yellow('Please configure git user.email manually: git config user.email "you@example.com"'));
     }
   } else {
