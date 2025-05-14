@@ -40,11 +40,12 @@ export async function main({
   reasoningEffort,
   repomixExtraArgs,
 }: MainOptions): Promise<void> {
-  await configureGitUserDetailsIfNeeded();
-
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
+  } else {
+    await configureGitUserDetailsIfNeeded();
   }
+
   await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
   await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], undefined, true);
   await runCommand('aider-install', []);
