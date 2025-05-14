@@ -68,9 +68,9 @@ export async function main({
   if (repoName) {
     try {
       // Check if the issue number is a PR by trying to view it.
-      // We use stdio: 'ignore' as we only care about success/failure, not the output.
+      // We use stdio: [null, null, null] to ignore stdio streams as we only care about success/failure, not the output.
       await runCommand('gh', ['pr', 'view', issueNumber.toString(), '--repo', repoName, '--json', 'number'], {
-        stdio: 'ignore',
+        stdio: [null, null, null],
       });
       console.info(ansis.green(`Issue #${issueNumber} is a Pull Request. Attempting to fetch its diff.`));
 
