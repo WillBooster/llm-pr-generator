@@ -51,3 +51,13 @@ export function parseCommandLineArgs(argsString: string): string[] {
 
   return result;
 }
+
+/**
+ * Removes HTML-style comments from a string.
+ *
+ * @param markdownContent The string containing markdown content
+ * @returns The string with HTML comments removed
+ */
+export function stripHtmlComments(markdownContent: string): string {
+  return markdownContent.replace(/<!--[\s\S]*?-->/g, '');
+}
