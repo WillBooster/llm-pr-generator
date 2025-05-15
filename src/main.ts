@@ -7,7 +7,7 @@ import { parseCommandLineArgs, stripHtmlComments } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { configureGitUserDetailsIfNeeded } from './profile';
-import { runCommand } from './spawn';
+import { executeCommandAndGetOutput, runCommand } from './spawn';
 
 /**
  * Options for the main function
