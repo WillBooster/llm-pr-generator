@@ -6,12 +6,12 @@ import ansis from 'ansis';
 export async function runCommand(
   command: string,
   args: string[],
-  options?: SpawnOptionsWithoutStdio,
-  ignoreExitStatus = false
+  options?: SpawnOptionsWithoutStdio & { ignoreExitStatus?: boolean }
 ): Promise<string> {
+  const { ignoreExitStatus, ...spawnOptions } = options ?? {};
   console.info(ansis.green(`$ ${command} ${args}`));
   console.info('stdout: ---------------------');
-  const ret = await spawnAsync(command, args, options);
+  const ret = await spawnAsync(command, args, spawnOptions);
   const stderr = ret.stderr.trim();
   if (stderr) {
     console.info('stderr: ---------------------');

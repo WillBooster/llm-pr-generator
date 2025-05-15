@@ -47,7 +47,7 @@ export async function main({
   }
 
   await runCommand('python', ['-m', 'pip', 'install', 'aider-install']);
-  await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], undefined, true);
+  await runCommand('uv', ['tool', 'uninstall', 'aider-chat'], { ignoreExitStatus: true });
   await runCommand('aider-install', []);
   await runCommand('uv', ['tool', 'run', '--from', 'aider-chat', 'pip', 'install', 'boto3']);
   // await runCommand('aider', ['--install-main-branch', '--yes-always']);
@@ -128,7 +128,7 @@ ${planText}
   const aiderAnswer = aiderResult.trim();
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
-  await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], undefined, true);
+  await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], { ignoreExitStatus: true });
   if (!dryRun) {
     await runCommand('git', ['push', 'origin', branchName, '--no-verify']);
   } else {
