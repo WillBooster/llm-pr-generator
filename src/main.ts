@@ -125,7 +125,7 @@ ${planText}
   if (resolutionPlan && 'filePaths' in resolutionPlan) {
     aiderArgs.push(...resolutionPlan.filePaths);
   }
-  let aiderResult = await runCommand('aider', aiderArgs, {
+  const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, FORCE_COLOR: '' },
   });
   let aiderAnswer = aiderResult.trim();
@@ -184,7 +184,6 @@ ${planText ? `\nOriginal plan:\n${planText}` : ''}
     console.info(ansis.yellow(`Would run test command: ${testCommand}`));
     console.info(ansis.yellow('Skipping test command execution and Aider fix attempt in dry-run mode.'));
   }
-
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
   await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], { ignoreExitStatus: true });
