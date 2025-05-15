@@ -14,7 +14,12 @@ A CLI and GitHub Action that automatically generate pull requests using AI (spec
 
 ## Usage
 
-See [action.yml](action.yml) and [.github/workflows/generate-pr.yml](.github/workflows/generate-pr.yml).
+- GitHub Actions
+  See [action.yml](action.yml) and [.github/workflows/generate-pr.yml](.github/workflows/generate-pr.yml).
+- CLI
+```sh
+bun start -i 37 -m gemini-2.5-pro-preview-05-06 -e high -r="--compress --remove-empty-lines --include 'src/**/*.ts'" -a="--model gemini/gemini-2.5-pro-preview-05-06 --edit-format diff-fenced --test-cmd='yarn check-for-ai' --auto-test"
+```
 
 ## License
 

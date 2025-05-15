@@ -123,7 +123,7 @@ ${planText}
     aiderArgs.push(...resolutionPlan.filePaths);
   }
   const aiderResult = await runCommand('aider', aiderArgs, {
-    env: { ...process.env, FORCE_COLOR: '' },
+    env: { ...process.env, NO_COLOR: '1' },
   });
   const aiderAnswer = aiderResult.trim();
 
