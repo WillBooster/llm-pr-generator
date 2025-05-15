@@ -7,7 +7,7 @@ import { parseCommandLineArgs, stripHtmlComments } from './utils';
 
 import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { configureGitUserDetailsIfNeeded } from './profile';
-import { runCommand } from './spawn';
+import { runCommand, spawnAsync } from './spawn';
 
 /**
  * Options for the main function
@@ -27,6 +27,8 @@ export interface MainOptions {
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
   repomixExtraArgs?: string;
+  /** Command to run after Aider applies changes. If it fails, Aider will try to fix it. */
+  testCommand?: string;
 }
 
 const MAX_ANSWER_LENGTH = 65000;
@@ -39,6 +41,7 @@ export async function main({
   planningModel,
   reasoningEffort,
   repomixExtraArgs,
+  testCommand,
 }: MainOptions): Promise<void> {
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
@@ -125,7 +128,93 @@ ${planText}
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, NO_COLOR: '1' },
   });
-  const aiderAnswer = aiderResult.trim();
+  let aiderAnswer = aiderResult.trim();
+
+  if (testCommand) {
+    console.info(ansis.cyan(`Executing test command: ${testCommand}`));
+    const [commandProgram, ...commandArgs] = parseCommandLineArgs(testCommand);
+    try {
+      const testResult = await spawnAsync(commandProgram, commandArgs, {
+        cwd: process.cwd(),
+        ignoreExitStatus: true, // spawnAsync should provide status, so we handle it manually
+      });
+
+      if (testResult.status !== 0) {
+        console.warn(ansis.yellow(`Test command failed with exit code ${testResult.status}.`));
+        console.warn(ansis.yellow('Stdout:'));
+        console.warn(testResult.stdout);
+        console.warn(ansis.yellow('Stderr:'));
+        console.warn(testResult.stderr);
+
+        const testFixPrompt = `
+The previous changes were applied, but the test command "${testCommand}" failed.
+Exit code: ${testResult.status}
+Stdout:
+\`\`\`
+${testResult.stdout}
+\`\`\`
+Stderr:
+\`\`\`
+${testResult.stderr}
+\`\`\`
+Please analyze the output and fix the errors.
+`.trim();
+        const aiderFixArgs = [
+          '--yes-always',
+          '--no-check-update',
+          '--no-gitignore',
+          '--no-show-model-warnings',
+          '--no-show-release-notes',
+          ...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS),
+        ];
+        if (dryRun) {
+          aiderFixArgs.push('--dry-run');
+        }
+        aiderFixArgs.push('--message', testFixPrompt);
+        if (resolutionPlan && 'filePaths' in resolutionPlan) {
+          aiderFixArgs.push(...resolutionPlan.filePaths);
+        }
+        console.info(ansis.cyan('Asking Aider to fix test command failures...'));
+        const aiderFixResult = await runCommand('aider', aiderFixArgs, {
+          env: { ...process.env, NO_COLOR: '1' },
+        });
+        aiderAnswer += `\n\n--- Aider fix attempt for test command ---\n${aiderFixResult.trim()}`;
+        console.info(ansis.green('Aider has attempted to fix the test failures.'));
+      } else {
+        console.info(ansis.green('Test command passed successfully.'));
+      }
+    } catch (error: any) {
+      console.error(ansis.red(`Failed to execute test command "${testCommand}": ${error.message}`));
+      const executionErrorPrompt = `
+The test command "${testCommand}" failed to execute.
+Error: ${error.message}
+This might indicate that the command is not installed or not found in the PATH.
+Please analyze this error and modify the code or provide instructions if the issue is with the environment.
+If the command itself is incorrect in the workflow, suggest a correction to the workflow or related configuration.
+`.trim();
+      const aiderErrorArgs = [
+        '--yes-always',
+        '--no-check-update',
+        '--no-gitignore',
+        '--no-show-model-warnings',
+        '--no-show-release-notes',
+        ...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS),
+      ];
+      if (dryRun) {
+        aiderErrorArgs.push('--dry-run');
+      }
+      aiderErrorArgs.push('--message', executionErrorPrompt);
+      if (resolutionPlan && 'filePaths' in resolutionPlan) {
+        aiderErrorArgs.push(...resolutionPlan.filePaths);
+      }
+      console.info(ansis.cyan('Asking Aider to address test command execution error...'));
+      const aiderErrorResult = await runCommand('aider', aiderErrorArgs, {
+        env: { ...process.env, NO_COLOR: '1' },
+      });
+      aiderAnswer += `\n\n--- Aider attempt for test command execution error ---\n${aiderErrorResult.trim()}`;
+      console.info(ansis.green('Aider has processed the command execution error.'));
+    }
+  }
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
   await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], { ignoreExitStatus: true });

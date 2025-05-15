@@ -43,6 +43,11 @@ const argv = await yargs(hideBin(process.argv))
     type: 'string',
     default: DEFAULT_REPOMIX_EXTRA_ARGS,
   })
+  .option('test-command', {
+    alias: 't',
+    description: 'Command to run after Aider applies changes. If it fails, Aider will try to fix it.',
+    type: 'string',
+  })
   .option('dry-run', {
     alias: 'd',
     description: 'Run without making actual changes (no branch creation, no PR)',
@@ -71,4 +76,5 @@ await main({
   planningModel: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],
+  testCommand: argv['test-command'],
 });
