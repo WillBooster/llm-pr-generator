@@ -25,6 +25,29 @@ export async function runCommand(
   return ret.stdout;
 }
 
+export async function executeCommandAndGetOutput(
+  command: string,
+  args: string[],
+  options?: SpawnOptionsWithoutStdio
+): Promise<{ stdout: string; stderr: string; exitCode: number | null }> {
+  console.info(ansis.green(`$ ${command} ${args.join(' ')}`));
+  const ret = await spawnAsync(command, args, options);
+  const stdout = ret.stdout.trim();
+  const stderr = ret.stderr.trim();
+  if (stdout) {
+    console.info('stdout: ---------------------');
+    console.info(ansis.white(stdout));
+    console.info('-----------------------------');
+  }
+  if (stderr) {
+    console.info('stderr: ---------------------');
+    console.info(ansis.yellow(stderr));
+    console.info('-----------------------------');
+  }
+  console.info(ansis.magenta(`Exit code: ${ret.status}\n`));
+  return { stdout, stderr, exitCode: ret.status };
+}
+
 export async function spawnAsync(
   command: string,
   args?: ReadonlyArray<string>,

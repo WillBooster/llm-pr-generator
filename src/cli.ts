@@ -49,6 +49,11 @@ const argv = await yargs(hideBin(process.argv))
     type: 'boolean',
     default: false,
   })
+  .option('test-command', {
+    alias: 't',
+    description: 'Command to run after Aider applies changes to verify them',
+    type: 'string',
+  })
   // Options only for this standalone tool --------------------
   .option('working-dir', {
     alias: 'w',
@@ -71,4 +76,5 @@ await main({
   planningModel: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],
+  testCommand: argv['test-command'],
 });

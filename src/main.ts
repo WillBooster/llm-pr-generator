@@ -27,6 +27,8 @@ export interface MainOptions {
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
   repomixExtraArgs?: string;
+  /** Command to run after Aider applies changes to verify them */
+  testCommand?: string;
 }
 
 const MAX_ANSWER_LENGTH = 65000;
@@ -39,6 +41,7 @@ export async function main({
   planningModel,
   reasoningEffort,
   repomixExtraArgs,
+  testCommand,
 }: MainOptions): Promise<void> {
   if (dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
@@ -122,10 +125,66 @@ ${planText}
   if (resolutionPlan && 'filePaths' in resolutionPlan) {
     aiderArgs.push(...resolutionPlan.filePaths);
   }
-  const aiderResult = await runCommand('aider', aiderArgs, {
+  let aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, FORCE_COLOR: '' },
   });
-  const aiderAnswer = aiderResult.trim();
+  let aiderAnswer = aiderResult.trim();
+
+  if (testCommand && !dryRun) {
+    console.info(ansis.cyan(`Running test command: ${testCommand}`));
+    const [command, ...args] = parseCommandLineArgs(testCommand);
+    const testResult = await executeCommandAndGetOutput(command, args);
+
+    if (testResult.exitCode !== 0) {
+      console.warn(ansis.yellow(`Test command failed with exit code ${testResult.exitCode}.`));
+      console.info(ansis.yellow('Attempting to fix with Aider...'));
+
+      const fixPrompt = `
+The previous changes were applied, but the following test command failed:
+Command: ${testCommand}
+Exit Code: ${testResult.exitCode}
+Stdout:
+\`\`\`\`
+${testResult.stdout}
+\`\`\`\`
+Stderr:
+\`\`\`\`
+${testResult.stderr}
+\`\`\`\`
+
+Please analyze the test command output and fix the errors in the codebase.
+Keep the original issue in mind:
+\`\`\`\`yml
+${issueText}
+\`\`\`\`
+${planText ? `\nOriginal plan:\n${planText}` : ''}
+`.trim();
+
+      const fixAiderArgs = [
+        '--yes-always',
+        '--no-check-update',
+        '--no-gitignore',
+        '--no-show-model-warnings',
+        '--no-show-release-notes',
+      ];
+      fixAiderArgs.push(...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS));
+      fixAiderArgs.push('--message', fixPrompt);
+      if (resolutionPlan && 'filePaths' in resolutionPlan) {
+        fixAiderArgs.push(...resolutionPlan.filePaths);
+      }
+
+      const fixAiderResult = await runCommand('aider', fixAiderArgs, {
+        env: { ...process.env, FORCE_COLOR: '' },
+      });
+      aiderAnswer += `\n\n--- Test Command Failed, Aider Fix Attempt ---\n\n${fixAiderResult.trim()}`;
+    } else {
+      console.info(ansis.green('Test command passed.'));
+    }
+  } else if (testCommand && dryRun) {
+    console.info(ansis.yellow(`Would run test command: ${testCommand}`));
+    console.info(ansis.yellow('Skipping test command execution and Aider fix attempt in dry-run mode.'));
+  }
+
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
   await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], { ignoreExitStatus: true });
