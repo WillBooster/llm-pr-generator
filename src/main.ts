@@ -183,7 +183,7 @@ Please analyze the output and fix the errors.
       } else {
         console.info(ansis.green('Test command passed successfully.'));
       }
-    } catch (error: any) {
+    } catch (error: Error) {
       console.error(ansis.red(`Failed to execute test command "${testCommand}": ${error.message}`));
       const executionErrorPrompt = `
 The test command "${testCommand}" failed to execute.
