@@ -1,7 +1,7 @@
 import process from 'node:process';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { DEFAULT_AIDER_EXTRA_ARGS, DEFAULT_REPOMIX_EXTRA_ARGS } from './defaultOptions';
+import { DEFAULT_AIDER_EXTRA_ARGS, DEFAULT_MAX_TEST_ATTEMPTS, DEFAULT_REPOMIX_EXTRA_ARGS } from './defaultOptions';
 import { main } from './main';
 import type { ReasoningEffort } from './types';
 
@@ -43,6 +43,16 @@ const argv = await yargs(hideBin(process.argv))
     type: 'string',
     default: DEFAULT_REPOMIX_EXTRA_ARGS,
   })
+  .option('test-command', {
+    alias: 't',
+    description: 'Command to run after Aider applies changes. If it fails, Aider will try to fix it.',
+    type: 'string',
+  })
+  .option('max-test-attempts', {
+    description: 'Maximum number of attempts to fix test failures',
+    type: 'number',
+    default: DEFAULT_MAX_TEST_ATTEMPTS,
+  })
   .option('dry-run', {
     alias: 'd',
     description: 'Run without making actual changes (no branch creation, no PR)',
@@ -68,7 +78,9 @@ await main({
   dryRun: argv['dry-run'],
   detailedPlan: argv['detailed-plan'],
   issueNumber: argv['issue-number'],
+  maxTestAttempts: argv['max-test-attempts'],
   planningModel: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],
+  testCommand: argv['test-command'],
 });
