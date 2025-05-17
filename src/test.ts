@@ -1,5 +1,5 @@
 import ansis from 'ansis';
-import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
+import { buildAiderArgs } from './aiderUtils';
 import type { MainOptions } from './main';
 import type { ResolutionPlan } from './plan';
 import { runCommand, spawnAsync } from './spawn';
@@ -9,7 +9,7 @@ export async function testAndFix(options: MainOptions, resolutionPlan: Resolutio
   const maxAttempts = options.maxTestAttempts;
   let attempts = 0;
   let success = false;
-  let ret = '';
+  let fixResult = '';
 
   while (!success && attempts < maxAttempts) {
     attempts++;
@@ -52,10 +52,10 @@ ${testResult.stderr}
 Please analyze the output and fix the errors.
 `.trim();
 
-    ret += await runAiderFix(options, resolutionPlan, prompt, 'test command');
+    fixResult += await runAiderFix(options, resolutionPlan, prompt, 'test command');
   }
 
-  return ret;
+  return fixResult;
 }
 
 /**
@@ -67,24 +67,7 @@ export async function runAiderFix(
   prompt: string,
   fixType: string
 ): Promise<string> {
-  const aiderArgs = [
-    '--yes-always',
-    '--no-check-update',
-    '--no-gitignore',
-    '--no-show-model-warnings',
-    '--no-show-release-notes',
-    ...parseCommandLineArgs(options.aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS),
-  ];
-
-  if (options.dryRun) {
-    aiderArgs.push('--dry-run');
-  }
-
-  aiderArgs.push('--message', prompt);
-
-  if (resolutionPlan && 'filePaths' in resolutionPlan) {
-    aiderArgs.push(...resolutionPlan.filePaths);
-  }
+  const aiderArgs = buildAiderArgs(options, { message: prompt, resolutionPlan });
 
   console.info(ansis.cyan(`Asking Aider to fix ${fixType}...`));
 

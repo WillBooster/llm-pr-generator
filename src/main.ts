@@ -1,14 +1,13 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
+import { buildAiderArgs } from './aiderUtils';
 import { planCodeChanges } from './plan';
-import type { GitHubIssue, ReasoningEffort } from './types';
-import { parseCommandLineArgs, stripHtmlComments } from './utils';
-
-import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { configureGitUserDetailsIfNeeded } from './profile';
 import { runCommand } from './spawn';
 import { testAndFix } from './test';
+import type { GitHubIssue, ReasoningEffort } from './types';
+import { stripHtmlComments } from './utils';
 
 /**
  * Options for the main function
@@ -57,11 +56,6 @@ export async function main(options: MainOptions): Promise<void> {
     'author,title,body,labels,comments',
   ]);
   const issue: GitHubIssue = JSON.parse(issueResult);
-
-  // if (!issue.labels.some((label) => label.name.includes('ai-pr'))) {
-  //   console.warn(ansis.yellow(`Issue #${options.issueNumber} is missing the required 'ai-pr' label. Processing skipped.`));
-  //   process.exit(0);
-  // }
 
   const cleanedIssueBody = stripHtmlComments(issue.body);
   const issueObject = {
@@ -112,21 +106,7 @@ ${planText}
   }
 
   // Build aider command arguments
-  const aiderArgs = [
-    '--yes-always',
-    '--no-check-update',
-    '--no-gitignore',
-    '--no-show-model-warnings',
-    '--no-show-release-notes',
-  ];
-  aiderArgs.push(...parseCommandLineArgs(options.aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS));
-  if (options.dryRun) {
-    aiderArgs.push('--dry-run');
-  }
-  aiderArgs.push('--message', prompt);
-  if (resolutionPlan && 'filePaths' in resolutionPlan) {
-    aiderArgs.push(...resolutionPlan.filePaths);
-  }
+  const aiderArgs = buildAiderArgs(options, { message: prompt, resolutionPlan });
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, NO_COLOR: '1' },
   });
