@@ -52,7 +52,7 @@ ${testResult.stderr}
 Please analyze the output and fix the errors.
 `.trim();
 
-    fixResult += await runAiderFix(options, resolutionPlan, prompt, 'test command');
+    fixResult += await runAiderFix(options, resolutionPlan, prompt);
   }
 
   return fixResult;
@@ -64,18 +64,14 @@ Please analyze the output and fix the errors.
 export async function runAiderFix(
   options: MainOptions,
   resolutionPlan: ResolutionPlan,
-  prompt: string,
-  fixType: string
+  prompt: string
 ): Promise<string> {
   const aiderArgs = buildAiderArgs(options, { message: prompt, resolutionPlan });
 
-  console.info(ansis.cyan(`Asking Aider to fix ${fixType}...`));
-
+  console.info(ansis.cyan(`Asking Aider to fix "${options.testCommand}"...`));
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, NO_COLOR: '1' },
   });
 
-  console.info(ansis.green(`Aider has attempted to fix the ${fixType}.`));
-
-  return `\n\n# Aider fix attempt for ${fixType}\n\n${aiderResult.trim()}`;
+  return `\n\n# Aider fix attempt for "${options.testCommand}"\n\n${aiderResult.trim()}`;
 }
