@@ -48,6 +48,11 @@ const argv = await yargs(hideBin(process.argv))
     description: 'Command to run after Aider applies changes. If it fails, Aider will try to fix it.',
     type: 'string',
   })
+  .option('max-test-attempts', {
+    description: 'Maximum number of attempts to fix test failures',
+    type: 'number',
+    default: 3,
+  })
   .option('dry-run', {
     alias: 'd',
     description: 'Run without making actual changes (no branch creation, no PR)',
@@ -73,6 +78,7 @@ await main({
   dryRun: argv['dry-run'],
   detailedPlan: argv['detailed-plan'],
   issueNumber: argv['issue-number'],
+  maxTestAttempts: argv['max-test-attempts'],
   planningModel: argv['planning-model'],
   reasoningEffort: argv['reasoning-effort'] as ReasoningEffort,
   repomixExtraArgs: argv['repomix-extra-args'],

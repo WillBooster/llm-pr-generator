@@ -23,6 +23,13 @@ inputs:
   aider-extra-args:
     description: 'Additional arguments to pass to the aider command (default: --compress --remove-empty-lines --include "src/**/*.{ts,tsx},**/*.md")'
     required: false
+  test-command:
+    description: 'Command to run after Aider applies changes. If it fails, Aider will try to fix it.'
+    required: false
+  max-test-attempts:
+    description: 'Maximum number of attempts to fix test failures'
+    required: false
+    default: '3'
   dry-run:
     description: 'Run without making actual changes (no branch creation, no PR)'
     required: false
