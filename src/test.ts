@@ -1,5 +1,5 @@
 import ansis from 'ansis';
-import { buildAiderArgs } from './aiderUtils';
+import { buildAiderArgs } from './aider';
 import type { MainOptions } from './main';
 import type { ResolutionPlan } from './plan';
 import { runCommand, spawnAsync } from './spawn';

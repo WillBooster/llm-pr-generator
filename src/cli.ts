@@ -1,7 +1,7 @@
 import process from 'node:process';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { DEFAULT_AIDER_EXTRA_ARGS, DEFAULT_REPOMIX_EXTRA_ARGS } from './defaultOptions';
+import { DEFAULT_AIDER_EXTRA_ARGS, DEFAULT_MAX_TEST_ATTEMPTS, DEFAULT_REPOMIX_EXTRA_ARGS } from './defaultOptions';
 import { main } from './main';
 import type { ReasoningEffort } from './types';
 
@@ -51,7 +51,7 @@ const argv = await yargs(hideBin(process.argv))
   .option('max-test-attempts', {
     description: 'Maximum number of attempts to fix test failures',
     type: 'number',
-    default: 3,
+    default: DEFAULT_MAX_TEST_ATTEMPTS,
   })
   .option('dry-run', {
     alias: 'd',

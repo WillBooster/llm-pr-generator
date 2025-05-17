@@ -1,7 +1,7 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
-import { buildAiderArgs } from './aiderUtils';
+import { buildAiderArgs } from './aider';
 import { planCodeChanges } from './plan';
 import { configureGitUserDetailsIfNeeded } from './profile';
 import { runCommand } from './spawn';
