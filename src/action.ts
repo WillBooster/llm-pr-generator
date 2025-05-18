@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import core from '@actions/core';
+import { DEFAULT_MAX_TEST_ATTEMPTS } from './defaultOptions';
 import { main } from './main';
 import type { ReasoningEffort } from './types';
 
@@ -13,6 +14,9 @@ const reasoningEffort = core.getInput('reasoning-effort', { required: false }) a
 const dryRun = core.getInput('dry-run', { required: false }) === 'true';
 const aiderExtraArgs = core.getInput('aider-extra-args', { required: false });
 const repomixExtraArgs = core.getInput('repomix-extra-args', { required: false });
+const testCommand = core.getInput('test-command', { required: false });
+const maxTestAttemptsInput = core.getInput('max-test-attempts', { required: false });
+const maxTestAttempts = maxTestAttemptsInput ? Number.parseInt(maxTestAttemptsInput, 10) : DEFAULT_MAX_TEST_ATTEMPTS;
 
 if (reasoningEffort && !['low', 'medium', 'high'].includes(reasoningEffort)) {
   console.error(
@@ -29,7 +33,9 @@ void main({
   detailedPlan,
   dryRun,
   issueNumber: Number(issueNumber),
+  maxTestAttempts,
   planningModel,
   reasoningEffort,
   repomixExtraArgs,
+  testCommand,
 });

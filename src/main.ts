@@ -1,13 +1,13 @@
 import child_process from 'node:child_process';
 import ansis from 'ansis';
 import YAML from 'yaml';
+import { buildAiderArgs } from './aider';
 import { planCodeChanges } from './plan';
-import type { GitHubIssue, ReasoningEffort } from './types';
-import { parseCommandLineArgs, stripHtmlComments } from './utils';
-
-import { DEFAULT_AIDER_EXTRA_ARGS } from './defaultOptions';
 import { configureGitUserDetailsIfNeeded } from './profile';
 import { runCommand } from './spawn';
+import { testAndFix } from './test';
+import type { GitHubIssue, ReasoningEffort } from './types';
+import { stripHtmlComments } from './utils';
 
 /**
  * Options for the main function
@@ -21,26 +21,22 @@ export interface MainOptions {
   dryRun: boolean;
   /** GitHub issue number to process */
   issueNumber: number;
+  /** Maximum number of attempts to fix test failures */
+  maxTestAttempts: number;
   /** LLM model to use for planning code changes */
   planningModel?: string;
   /** Level of reasoning effort for the LLM */
   reasoningEffort?: ReasoningEffort;
   /** Extra arguments for repomix when generating context */
   repomixExtraArgs?: string;
+  /** Command to run after Aider applies changes. If it fails, Aider will try to fix it. */
+  testCommand?: string;
 }
 
 const MAX_ANSWER_LENGTH = 65000;
 
-export async function main({
-  aiderExtraArgs,
-  detailedPlan,
-  dryRun,
-  issueNumber,
-  planningModel,
-  reasoningEffort,
-  repomixExtraArgs,
-}: MainOptions): Promise<void> {
-  if (dryRun) {
+export async function main(options: MainOptions): Promise<void> {
+  if (options.dryRun) {
     console.info(ansis.yellow('Running in dry-run mode. No branches or PRs will be created.'));
   } else {
     await configureGitUserDetailsIfNeeded();
@@ -55,16 +51,11 @@ export async function main({
   const issueResult = await runCommand('gh', [
     'issue',
     'view',
-    issueNumber.toString(),
+    options.issueNumber.toString(),
     '--json',
     'author,title,body,labels,comments',
   ]);
   const issue: GitHubIssue = JSON.parse(issueResult);
-
-  // if (!issue.labels.some((label) => label.name.includes('ai-pr'))) {
-  //   console.warn(ansis.yellow(`Issue #${issueNumber} is missing the required 'ai-pr' label. Processing skipped.`));
-  //   process.exit(0);
-  // }
 
   const cleanedIssueBody = stripHtmlComments(issue.body);
   const issueObject = {
@@ -78,7 +69,15 @@ export async function main({
   };
   const issueText = YAML.stringify(issueObject).trim();
   const resolutionPlan =
-    planningModel && (await planCodeChanges(planningModel, issueText, detailedPlan, reasoningEffort, repomixExtraArgs));
+    (options.planningModel &&
+      (await planCodeChanges(
+        options.planningModel,
+        issueText,
+        options.detailedPlan,
+        options.reasoningEffort,
+        options.repomixExtraArgs
+      ))) ||
+    undefined;
   const planText =
     resolutionPlan && 'plan' in resolutionPlan && resolutionPlan.plan
       ? `
@@ -99,37 +98,28 @@ ${planText}
 
   const now = new Date();
 
-  const branchName = `ai-pr-${issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
-  if (!dryRun) {
+  const branchName = `ai-pr-${options.issueNumber}-${now.getFullYear()}_${getTwoDigits(now.getMonth() + 1)}${getTwoDigits(now.getDate())}_${getTwoDigits(now.getHours())}${getTwoDigits(now.getMinutes())}${getTwoDigits(now.getSeconds())}`;
+  if (!options.dryRun) {
     await runCommand('git', ['switch', '-C', branchName]);
   } else {
     console.info(ansis.yellow(`Would create branch: ${branchName}`));
   }
 
   // Build aider command arguments
-  const aiderArgs = [
-    '--yes-always',
-    '--no-check-update',
-    '--no-gitignore',
-    '--no-show-model-warnings',
-    '--no-show-release-notes',
-  ];
-  aiderArgs.push(...parseCommandLineArgs(aiderExtraArgs || DEFAULT_AIDER_EXTRA_ARGS));
-  if (dryRun) {
-    aiderArgs.push('--dry-run');
-  }
-  aiderArgs.push('--message', prompt);
-  if (resolutionPlan && 'filePaths' in resolutionPlan) {
-    aiderArgs.push(...resolutionPlan.filePaths);
-  }
+  const aiderArgs = buildAiderArgs(options, { prompt: prompt, resolutionPlan });
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, NO_COLOR: '1' },
   });
-  const aiderAnswer = aiderResult.trim();
+  let aiderAnswer = aiderResult.trim();
+  if (options.testCommand) {
+    aiderAnswer += await testAndFix(options, resolutionPlan);
+  }
 
   // Try commiting changes because aider may fail to commit changes due to pre-commit hooks
-  await runCommand('git', ['commit', '-m', `fix: close #${issueNumber}`, '--no-verify'], { ignoreExitStatus: true });
-  if (!dryRun) {
+  await runCommand('git', ['commit', '-m', `fix: close #${options.issueNumber}`, '--no-verify'], {
+    ignoreExitStatus: true,
+  });
+  if (!options.dryRun) {
     await runCommand('git', ['push', 'origin', branchName, '--no-verify']);
   } else {
     console.info(ansis.yellow(`Would push branch: ${branchName} to origin`));
@@ -137,7 +127,7 @@ ${planText}
 
   // Create a PR using GitHub CLI
   const prTitle = getHeaderOfFirstCommit();
-  let prBody = `Closes #${issueNumber}
+  let prBody = `Closes #${options.issueNumber}
 
 ${planText}
 `;
@@ -148,15 +138,15 @@ ${planText}
 ${aiderAnswer.slice(0, MAX_ANSWER_LENGTH - prBody.length)}
 \`\`\`\``;
   prBody = prBody.replaceAll(/(?:\s*\n){2,}/g, '\n\n').trim();
-  if (!dryRun) {
+  if (!options.dryRun) {
     const repoName = getGitRepoName();
     await runCommand('gh', ['pr', 'create', '--title', prTitle, '--body', prBody, '--repo', repoName]);
   } else {
     console.info(ansis.yellow(`Would create PR with title: ${prTitle}`));
-    console.info(ansis.yellow(`PR body would include the aider response and close issue #${issueNumber}`));
+    console.info(ansis.yellow(`PR body would include the aider response and close issue #${options.issueNumber}`));
   }
 
-  console.info(`\nIssue #${issueNumber} processed successfully.`);
+  console.info(`\nIssue #${options.issueNumber} processed successfully.`);
   console.info('AWS_REGION_NAME:', process.env.AWS_REGION_NAME);
 }
 

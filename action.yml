@@ -18,11 +18,20 @@ inputs:
     description: 'Constrains effort on reasoning for reasoning models. Supported values are low, medium, and high. Reducing reasoning effort can result in faster responses and fewer tokens used.'
     required: false
   repomix-extra-args:
-    description: 'Extra arguments for repomix when generating context for planning (default: --model gemini/gemini-2.5-pro-preview-05-06 --edit-format diff-fenced --chat-language English)'
+    description: 'Extra arguments for repomix when generating context for planning'
     required: false
+    default: '--model gemini/gemini-2.5-pro-preview-05-06 --edit-format diff-fenced --chat-language English'
   aider-extra-args:
-    description: 'Additional arguments to pass to the aider command (default: --compress --remove-empty-lines --include "src/**/*.{ts,tsx},**/*.md")'
+    description: 'Additional arguments to pass to the aider command'
     required: false
+    default: '--compress --remove-empty-lines --include "src/**/*.{ts,tsx},**/*.md"'
+  test-command:
+    description: 'Command to run after Aider applies changes. If it fails, Aider will try to fix it.'
+    required: false
+  max-test-attempts:
+    description: 'Maximum number of attempts to fix test failures'
+    required: false
+    default: '5'
   dry-run:
     description: 'Run without making actual changes (no branch creation, no PR)'
     required: false
