@@ -24,7 +24,9 @@ jobs:
           planning-model: gemini-2.5-pro-preview-05-06
           reasoning-effort: high
           repomix-extra-args: "--compress --remove-empty-lines --include 'src/**/*.ts'"
-          aider-extra-args: "--model gemini/gemini-2.5-pro-preview-05-06 --edit-format diff-fenced --test-cmd='yarn check-for-ai' --auto-test --chat-language English"
+          aider-extra-args: '--model gemini/gemini-2.5-pro-preview-05-06 --edit-format diff-fenced --chat-language English'
+          test-command: 'yarn check-for-ai'
+          max-test-attempts: 10
         env:
           # for Amazon (Bedrock)
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
