@@ -111,8 +111,7 @@ ${planText}
     env: { ...process.env, NO_COLOR: '1' },
   });
   let aiderAnswer = aiderResult.trim();
-
-  if (options.testCommand && resolutionPlan) {
+  if (options.testCommand) {
     aiderAnswer += await testAndFix(options, resolutionPlan);
   }
 

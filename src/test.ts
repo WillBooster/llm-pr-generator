@@ -5,7 +5,7 @@ import type { ResolutionPlan } from './plan';
 import { runCommand, spawnAsync } from './spawn';
 import { parseCommandLineArgs } from './utils';
 
-export async function testAndFix(options: MainOptions, resolutionPlan: ResolutionPlan): Promise<string> {
+export async function testAndFix(options: MainOptions, resolutionPlan?: ResolutionPlan): Promise<string> {
   const maxAttempts = options.maxTestAttempts;
   let attempts = 0;
   let fixResult = '';
@@ -62,7 +62,7 @@ Please analyze the output and fix the errors.
 export async function runAiderFix(
   options: MainOptions,
   prompt: string,
-  resolutionPlan: ResolutionPlan | undefined
+  resolutionPlan?: ResolutionPlan
 ): Promise<string> {
   const aiderArgs = buildAiderArgs(options, { prompt, resolutionPlan });
 
