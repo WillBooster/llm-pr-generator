@@ -106,7 +106,7 @@ ${planText}
   }
 
   // Build aider command arguments
-  const aiderArgs = buildAiderArgs(options, { message: prompt, resolutionPlan });
+  const aiderArgs = buildAiderArgs(options, { prompt: prompt, resolutionPlan });
   const aiderResult = await runCommand('aider', aiderArgs, {
     env: { ...process.env, NO_COLOR: '1' },
   });

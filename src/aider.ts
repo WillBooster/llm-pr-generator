@@ -7,12 +7,12 @@ import { parseCommandLineArgs } from './utils';
  * Builds the command line arguments for the aider command
  *
  * @param options The main options object
- * @param additionalArgs Additional arguments to include
+ * @param args Arguments to include
  * @returns An array of command line arguments for aider
  */
 export function buildAiderArgs(
   options: MainOptions,
-  additionalArgs: { message?: string; resolutionPlan?: ResolutionPlan } = {}
+  args: { prompt: string; resolutionPlan?: ResolutionPlan }
 ): string[] {
   const aiderArgs = [
     '--yes-always',
@@ -27,12 +27,9 @@ export function buildAiderArgs(
     aiderArgs.push('--dry-run');
   }
 
-  if (additionalArgs.message) {
-    aiderArgs.push('--message', additionalArgs.message);
-  }
-
-  if (additionalArgs.resolutionPlan && 'filePaths' in additionalArgs.resolutionPlan) {
-    aiderArgs.push(...additionalArgs.resolutionPlan.filePaths);
+  aiderArgs.push('--message', args.prompt);
+  if (args.resolutionPlan && 'filePaths' in args.resolutionPlan) {
+    aiderArgs.push(...args.resolutionPlan.filePaths);
   }
 
   return aiderArgs;

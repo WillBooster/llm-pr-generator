@@ -8,10 +8,9 @@ import { parseCommandLineArgs } from './utils';
 export async function testAndFix(options: MainOptions, resolutionPlan: ResolutionPlan): Promise<string> {
   const maxAttempts = options.maxTestAttempts;
   let attempts = 0;
-  let success = false;
   let fixResult = '';
 
-  while (!success && attempts < maxAttempts) {
+  while (attempts < maxAttempts) {
     attempts++;
     console.info(ansis.cyan(`Executing test command (attempt ${attempts}/${maxAttempts}): ${options.testCommand}`));
     const [commandProgram, ...commandArgs] = parseCommandLineArgs(options.testCommand || '');
@@ -22,7 +21,6 @@ export async function testAndFix(options: MainOptions, resolutionPlan: Resolutio
 
     if (testResult.status === 0) {
       console.info(ansis.green('Test command passed successfully.'));
-      success = true;
       break;
     }
 
@@ -35,7 +33,7 @@ export async function testAndFix(options: MainOptions, resolutionPlan: Resolutio
     }
 
     const prompt = `
-The previous changes were applied, but the test command "${options.testCommand}" failed.
+The previous changes were applied, but the test command \`${options.testCommand}\` failed.
 
 Exit code: ${testResult.status}
 
@@ -52,7 +50,7 @@ ${testResult.stderr}
 Please analyze the output and fix the errors.
 `.trim();
 
-    fixResult += await runAiderFix(options, resolutionPlan, prompt);
+    fixResult += await runAiderFix(options, prompt, resolutionPlan);
   }
 
   return fixResult;
@@ -63,10 +61,10 @@ Please analyze the output and fix the errors.
  */
 export async function runAiderFix(
   options: MainOptions,
-  resolutionPlan: ResolutionPlan,
-  prompt: string
+  prompt: string,
+  resolutionPlan: ResolutionPlan | undefined
 ): Promise<string> {
-  const aiderArgs = buildAiderArgs(options, { message: prompt, resolutionPlan });
+  const aiderArgs = buildAiderArgs(options, { prompt, resolutionPlan });
 
   console.info(ansis.cyan(`Asking Aider to fix "${options.testCommand}"...`));
   const aiderResult = await runCommand('aider', aiderArgs, {
