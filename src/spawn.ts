@@ -32,7 +32,9 @@ export async function spawnAsync(
 ): Promise<Omit<SpawnSyncReturns<string>, 'output' | 'error'>> {
   return new Promise((resolve, reject) => {
     try {
-      const proc = spawn(command, args ?? [], options);
+      // Sanitize args to remove null bytes
+      const sanitizedArgs = (args ?? []).map((arg) => arg.replace(/\0/g, ''));
+      const proc = spawn(command, sanitizedArgs, options);
       // `setEncoding` is undefined in Bun
       proc.stdout?.setEncoding?.('utf8');
       proc.stderr?.setEncoding?.('utf8');
