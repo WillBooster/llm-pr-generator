@@ -31,9 +31,38 @@ export async function planCodeChanges(
   const context = fs.readFileSync(REPOMIX_FILE_NAME, 'utf8');
   void fs.promises.rm(REPOMIX_FILE_NAME, { force: true });
 
+  const prompt2 = `
+Review the following GitHub issue and the following list of available file paths and their contents.
+Based on this information, identify the files from the provided two lists to be modified to resolve the issue and to be referred to create modification.
+
+GitHub Issue:
+\`\`\`\`yml
+${YAML.stringify(issueContent).trim()}
+\`\`\`\`
+
+Available files: The user will provide this as a separate message.
+
+Please format your response as follows:
+\`\`\`
+# File Paths to be Modified
+
+- \`<filePath1>\`
+- \`<filePath2>\`
+- ...
+
+# File Paths to be Referred
+
+- \`<filePath1>\`
+- \`<filePath2>\`
+- ...
+\`\`\`
+
+Ensure that the file paths are exactly as provided in the input.
+`.trim();
+
   const planningTask = detailedPlan
     ? `
-- Identify the files from the provided list that will need to be modified to implement the plan and resolve the issue.`
+- Create a step-by-step plan outlining how to address the GitHub issue. The plan must focus on writing code excluding tests.`
     : '';
   const planFormat = detailedPlan
     ? `# Plan to Resolve the Issue
@@ -49,7 +78,7 @@ export async function planCodeChanges(
 Review the following GitHub issue and the following list of available file paths and their contents.
 Based on this information, please perform the following tasks:
 
-- Create a step-by-step plan outlining how to address the GitHub issue. The plan must focus on writing code excluding tests.
+- Identify the files from the provided list that will need to be modified to implement the plan and resolve the issue.
 ${planningTask}
 
 GitHub Issue:
